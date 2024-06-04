@@ -6,9 +6,6 @@ import net.dv8tion.jda.api.requests.GatewayIntent;
 import org.json.JSONObject;
 
 import javax.security.auth.login.LoginException;
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 
 import org.jsoup.Jsoup;
@@ -16,21 +13,22 @@ import org.jsoup.nodes.*;
 import org.jsoup.select.*;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 
 public class Main {
+
     private static final String token;
+
     //read config.json
     private static String readConfigFile(String fileName) {
         StringBuilder sb = new StringBuilder();
         try (InputStream is = Main.class.getClassLoader().getResourceAsStream(fileName);
              BufferedReader br = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                sb.append(line);
-            }
+            String line ="";
+            while ((line = br.readLine()) != null) sb.append(line);
         } catch (Exception e) {
             e.printStackTrace();
         }
