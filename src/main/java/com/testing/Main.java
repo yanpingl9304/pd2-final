@@ -11,9 +11,9 @@ public class Main {
 
     public static void main(String[] args) throws LoginException {
         JDA jda = JDABuilder.createDefault(token) // enable all default intents
-                .enableIntents(GatewayIntent.GUILD_MEMBERS)// also enable privileged intent
-                .enableIntents(GatewayIntent.MESSAGE_CONTENT)
-                .build();
+                  .enableIntents(GatewayIntent.GUILD_MEMBERS)// also enable privileged intent
+                  .enableIntents(GatewayIntent.MESSAGE_CONTENT)
+                  .build();
         jda.addEventListener(new Listeners());
     }
 
