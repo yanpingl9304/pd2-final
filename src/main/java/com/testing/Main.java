@@ -16,11 +16,13 @@ import org.jsoup.nodes.*;
 import org.jsoup.select.*;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 
 public class Main {
     private static final String token;
-
+    //read config.json
     private static String readConfigFile(String fileName) {
         StringBuilder sb = new StringBuilder();
         try (InputStream is = Main.class.getClassLoader().getResourceAsStream(fileName);
@@ -35,6 +37,7 @@ public class Main {
         return sb.toString();
     }
 
+    // Get token from json
     static {
         String jsonString = readConfigFile("config.json");
         JSONObject json = new JSONObject(jsonString);
@@ -44,8 +47,8 @@ public class Main {
     // Build a Bot
     public static void main(String[] args) throws LoginException {
 
-        JDA jda = JDABuilder.createDefault(token) // enable all default intents
-                  .enableIntents(GatewayIntent.GUILD_MEMBERS)// also enable privileged intent
+        JDA jda = JDABuilder.createDefault(token)
+                  .enableIntents(GatewayIntent.GUILD_MEMBERS)
                   .enableIntents(GatewayIntent.MESSAGE_CONTENT)
                   .build();
         jda.addEventListener(new Listeners());
