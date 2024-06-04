@@ -41,7 +41,7 @@ public class Main {
         token = json.getString("token");
     }
 
-
+    // Build a Bot
     public static void main(String[] args) throws LoginException {
 
         JDA jda = JDABuilder.createDefault(token) // enable all default intents
