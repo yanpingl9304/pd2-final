@@ -21,7 +21,11 @@ public class Listeners extends ListenerAdapter {
         String message = event.getMessage().getContentRaw();
         String[] messageSplit = message.split(" ");
         if(messageSplit[0].equalsIgnoreCase("weather")) {
-            GetCurrentWeather(event,messageSplit[1]);
+            if(messageSplit.length == 1) {
+                event.getChannel().sendMessage("Usage : weather [city]").queue();
+            } else {
+                GetCurrentWeather(event,messageSplit[1]);
+            }
         }
     }
 
