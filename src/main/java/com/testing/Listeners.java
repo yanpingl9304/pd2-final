@@ -16,13 +16,16 @@ import java.io.IOException;
 
 public class Listeners extends ListenerAdapter {
 
-
     @Override
     public void onMessageReceived(@NotNull MessageReceivedEvent event) {
         String message = event.getMessage().getContentRaw();
         String[] messageSplit = message.split(" ");
         if(messageSplit[0].equalsIgnoreCase("weather")) {
-            GetCurrentWeather(event,messageSplit[1]);
+            if(messageSplit.length == 1) {
+                event.getChannel().sendMessage("Usage : weather [city]").queue();
+            } else {
+                GetCurrentWeather(event,messageSplit[1]);
+            }
         }
     }
     public void GetCurrentWeather(@NotNull MessageReceivedEvent event ,String city){
@@ -63,7 +66,7 @@ public class Listeners extends ListenerAdapter {
             embed.setTitle("Current Weather Information");
             embed.setDescription("Temperature : " + FtoC(temperature.substring(0,2))+"\n"
                                  +"Weather : " + weather+"\n"
-                                 +"Current : " + "Day "+FtoC(current.substring(4,6))+" • Night " + FtoC(current.substring(16, 18)));
+                                 +"Current : " + "Day "+FtoC(current.substring(4,6))+" Night " + FtoC(current.substring(16, 18)));
             channel.sendMessage("").setEmbeds(embed.build()).queue();
 
         } catch (IOException e) {
