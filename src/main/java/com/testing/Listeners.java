@@ -1,5 +1,7 @@
 package com.testing;
 
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.session.ReadyEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -9,6 +11,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.io.File;
 import java.io.IOException;
 
 public class Listeners extends ListenerAdapter {
@@ -27,7 +30,8 @@ public class Listeners extends ListenerAdapter {
     }
 
     public void GetCurrentWeather(@NotNull MessageReceivedEvent event){
-        String url = "https://weather.com/weather/today/l/5f9da4381a390189d917ae1caed305047455b2a6496f40b3c96f4d4fd46d20d1"; // LA
+        MessageChannel channel = event.getChannel();
+        String url = "https://weather.com/weather/today/l/5f9da4381a390189d917ae1caed305047455b2a6496f40b3c96f4d4fd46d20d1"; // 範例地點LA
         String temperature = "";
         String weather = "";
         String current = "";
@@ -50,12 +54,14 @@ public class Listeners extends ListenerAdapter {
             }
 
             // output
-            event.getChannel().sendMessage("Temperature: " + FtoC(temperature.substring(0,2))).queue();
-            event.getChannel().sendMessage("Weather: " + weather).queue();
-            event.getChannel().sendMessage("Current: " + "Day "+FtoC(current.substring(4,6))+" • Night " + FtoC(current.substring(16, 18))).queue();
-            // System.out.println("Temperature: " + FtoC(temperature.substring(0,2)));
-            // System.out.println("Weather: " + weather);
-            // System.out.println("Current: " + "Day "+FtoC(current.substring(4,6))+" • Night " + FtoC(current.substring(16, 18)));
+            EmbedBuilder embed = new EmbedBuilder();
+            embed.setImage("https://cdn.icon-icons.com/icons2/350/PNG/512/weather-clear-symbolic_36000.png"); // 範例圖
+            embed.setTitle("Current Weather Information");
+            embed.setDescription("Temperature: " + FtoC(temperature.substring(0,2))+"\n"
+                                 +"Weather: " + weather+"\n"
+                                 +"Current: " + "Day "+FtoC(current.substring(4,6))+" • Night " + FtoC(current.substring(16, 18)));
+            channel.sendMessage("").setEmbeds(embed.build()).queue();
+
         } catch (IOException e) {
             e.printStackTrace();
         }
