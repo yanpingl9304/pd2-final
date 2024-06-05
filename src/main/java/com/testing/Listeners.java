@@ -16,7 +16,11 @@ import org.jsoup.select.Elements;
 import java.io.IOException;
 
 public class Listeners extends ListenerAdapter {
-
+    @Override
+    public void onReady(@NotNull ReadyEvent event) {
+        Guild guild = event.getJDA().getGuildById(755721077128298536L);
+        guild.upsertCommand("rainrate","gets the rain rate of the city").queue();
+    }
     @Override
     public void onMessageReceived(@NotNull MessageReceivedEvent event) {
         String message = event.getMessage().getContentRaw();
@@ -92,9 +96,5 @@ public class Listeners extends ListenerAdapter {
         return iconUrl;
     }
 
-    @Override
-    public void onReady(@NotNull ReadyEvent event) {
-        Guild guild = event.getJDA().getGuildById(1247376009616031754L);
-        guild.upsertCommand("rainrate","gets the rain rate of the city").queue();
-    }
+
 }
