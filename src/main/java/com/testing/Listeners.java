@@ -95,6 +95,6 @@ public class Listeners extends ListenerAdapter {
     @Override
     public void onReady(@NotNull ReadyEvent event) {
         Guild guild = event.getJDA().getGuildById(1247376009616031754L);
-        guild.upsertCommand("rainrate" , "gets the rain rate of the city").queue();
+        guild.upsertCommand("rainrate","gets the rain rate of the city").queue();
     }
 }
