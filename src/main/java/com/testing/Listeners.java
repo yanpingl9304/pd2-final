@@ -15,6 +15,8 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Listeners extends ListenerAdapter {
     @Override
@@ -50,7 +52,10 @@ public class Listeners extends ListenerAdapter {
         String weather = "";
         String current = "";
         String hourlytemp = "";
-        Double hourlyrainrate = 0.0;
+        String hourlytime = "";
+        String hourlycondition = "";
+        String hourlyweather = "";
+        String hourlyrainrate = "";
         try {
             // connect to weather.com
             Document doc = Jsoup.connect(url).get();
@@ -69,15 +74,24 @@ public class Listeners extends ListenerAdapter {
                 current = currentCondition.text().trim();
 
             }
-            Elements hourlyElements = doc.select(".Accessibility--visuallyHidden--H7O4p");
+            List<Elements> hourlyElements = new ArrayList<>();
+            hourlyElements.add(doc.select(".HourlyWeatherCard--TableWrapper--1OobO")
+                    .select(".Ellipsis--ellipsis--3ADai"));//time
+            hourlyElements.add(doc.select(".HourlyWeatherCard--TableWrapper--1OobO")
+                    .select(".Column--temp--1sO_J Column--verticalStack--28b4K"));//temperature
+            hourlyElements.add(doc.select(".HourlyWeatherCard--TableWrapper--1OobO")
+                    .select(".Column--weatherIcon--2w_Rf Icon--icon--2aW0V Icon--fullTheme--3Fc-5"));//condition
+            hourlyElements.add(doc.select(".HourlyWeatherCard--TableWrapper--1OobO")
+                    .select(".Icon--icon--2aW0V Icon--fullTheme--3Fc-5"));//weather
+            hourlyElements.add(doc.select(".HourlyWeatherCard--TableWrapper--1OobO")
+                    .select(".Column--precip--3JCDO"));//rain chance
 
-            for (Element element : hourlyElements) {
-//                Element hourTemp = element.selectFirst("");
-//                hourlytemp = hourTemp.text().trim();
-//                Element hourlyrainRate = element.selectFirst(".Accessibility--visuallyHidden--H7O4p");
-//                hourlyrainrate = Double.parseDouble(hourlyrainRate.text().trim());
-                System.out.println(element.text());
-            }
+            hourlytime = hourlyElements.get(0).text().trim();
+            hourlytemp = hourlyElements.get(1).text().trim();
+            hourlycondition = hourlyElements.get(2).text().trim();
+            hourlyweather = hourlyElements.get(3).text().trim();
+            hourlyrainrate = hourlyElements.get(4).text().replaceAll("[^0-9]"," ").trim().replaceAll("\\s+","");
+            System.out.println(/*hourlytime + "0\n" + hourlytemp + "1\n" + hourlycondition + "2\n" + hourlyweather + "3\n"*/ hourlyrainrate+" 4");
             // output
             EmbedBuilder embed = new EmbedBuilder();
             embed.setImage(SelectIcon(weather,jsonIcon));
