@@ -28,7 +28,6 @@ public class Listeners extends ListenerAdapter {
             }
         }
     }
-
     public void GetCurrentWeather(@NotNull MessageReceivedEvent event ,String city){
 
         String jsonCityString = Main.readConfigFile("city.json");
@@ -74,7 +73,6 @@ public class Listeners extends ListenerAdapter {
             e.printStackTrace();
         }
     }
-
     public String FtoC(String temperature) {
         double temperatureF = Double.parseDouble(temperature);
         double temperatureC = (temperatureF - 32) / 9 * 5;
