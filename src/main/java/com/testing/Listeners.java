@@ -1,6 +1,7 @@
 package com.testing;
 
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.session.ReadyEvent;
@@ -92,8 +93,8 @@ public class Listeners extends ListenerAdapter {
     }
 
     @Override
-    public void onReady(ReadyEvent event) {
-        event.getJDA().getGuildById(1247376009616031754L);
-
+    public void onReady(@NotNull ReadyEvent event) {
+        Guild guild = event.getJDA().getGuildById(1247376009616031754L);
+        guild.upsertCommand("rainrate" , "gets the rain rate of the city");
     }
 }
