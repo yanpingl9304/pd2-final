@@ -6,6 +6,7 @@ import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.session.ReadyEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
@@ -19,7 +20,9 @@ public class Listeners extends ListenerAdapter {
     @Override
     public void onReady(@NotNull ReadyEvent event) {
         Guild guild = event.getJDA().getGuildById(755721077128298536L);
-        guild.upsertCommand("rainrate","gets the rain rate of the city").queue();
+        guild.upsertCommand("rainrate","gets the rain rate of the city")
+                .addOption(OptionType.STRING,"cityName","the city name",true)
+                .queue();
     }
     @Override
     public void onMessageReceived(@NotNull MessageReceivedEvent event) {
@@ -46,7 +49,7 @@ public class Listeners extends ListenerAdapter {
         String temperature = "";
         String weather = "";
         String current = "";
-
+        Double rainRate = 0.0;
         try {
             // connect to weather.com
             Document doc = Jsoup.connect(url).get();
@@ -63,6 +66,9 @@ public class Listeners extends ListenerAdapter {
 
                 Element currentCondition = element.selectFirst(".CurrentConditions--tempHiLoValue--3T1DG");
                 current = currentCondition.text().trim();
+
+                Element rainchance = element.selectFirst(".Accessibility--visuallyHidden--H7O4p");
+                rainRate = Double.parseDouble(rainchance.text().trim());
             }
 
             // output
