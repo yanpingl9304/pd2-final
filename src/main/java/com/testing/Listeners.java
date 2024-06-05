@@ -72,7 +72,7 @@ public class Listeners extends ListenerAdapter {
             Elements hourlyElements = doc.select(".HourlyWeatherCard--TableWrapper--1OobO");
 
             for (Element element : hourlyElements) {
-                Element hourTemp = element.selectFirst(".TemperatureValue");
+                Element hourTemp = element.selectFirst(".Column--temp--1sO_J Column--verticalStack--28b4K");
                 hourlytemp = hourTemp.text().trim();
                 Element hourlyrainRate = element.selectFirst(".Accessibility--visuallyHidden--H7O4p");
                 hourlyrainrate = Double.parseDouble(hourlyrainRate.text().trim());
