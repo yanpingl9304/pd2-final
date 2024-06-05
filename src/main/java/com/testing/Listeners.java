@@ -69,13 +69,14 @@ public class Listeners extends ListenerAdapter {
                 current = currentCondition.text().trim();
 
             }
-            Elements hourlyElements = doc.select(".HourlyWeatherCard--TableWrapper--1OobO");
+            Elements hourlyElements = doc.select("div.HourlyWeatherCard--TableWrapper--1OobO");
 
             for (Element element : hourlyElements) {
-                Element hourTemp = element.selectFirst(".Column--temp--1sO_J Column--verticalStack--28b4K");
-                hourlytemp = hourTemp.text().trim();
-                Element hourlyrainRate = element.selectFirst(".Accessibility--visuallyHidden--H7O4p");
-                hourlyrainrate = Double.parseDouble(hourlyrainRate.text().trim());
+//                Element hourTemp = element.selectFirst("");
+//                hourlytemp = hourTemp.text().trim();
+//                Element hourlyrainRate = element.selectFirst(".Accessibility--visuallyHidden--H7O4p");
+//                hourlyrainrate = Double.parseDouble(hourlyrainRate.text().trim());
+                System.out.println(element.text());
             }
             // output
             EmbedBuilder embed = new EmbedBuilder();
@@ -84,8 +85,9 @@ public class Listeners extends ListenerAdapter {
             embed.setDescription("Temperature : " + FtoC(temperature.substring(0,2))+"\n"
                                  +"Weather : " + weather+"\n"
                                  +"Current : " + "Day "+FtoC(current.substring(4,6))+" Night " + FtoC(current.substring(16, 18) + "\n\n"
-                                 +"Hourly Temp : " + hourlytemp + "\n" )
-                                 +"Hourly Rate : " + hourlyrainrate);
+//                                 +"Hourly Temp : " + hourlytemp + "\n" )
+//                                 +"Hourly Rate : " + hourlyrainrate);
+                    ));
             channel.sendMessage("").setEmbeds(embed.build()).queue();
 
         } catch (IOException e) {
