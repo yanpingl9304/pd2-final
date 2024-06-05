@@ -10,7 +10,7 @@ public class SlashCom extends ListenerAdapter {
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
         if (event.getName().equals("rainrate")) {
-            OptionMapping cityName = event.getOption("cityName");
+            OptionMapping cityName = event.getOption("cityname");
             String city = cityName.getAsString();
             //event.reply("hello").queue();
         }

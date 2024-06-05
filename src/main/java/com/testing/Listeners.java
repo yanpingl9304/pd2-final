@@ -21,7 +21,7 @@ public class Listeners extends ListenerAdapter {
     public void onReady(@NotNull ReadyEvent event) {
         Guild guild = event.getJDA().getGuildById(755721077128298536L);
         guild.upsertCommand("rainrate","gets the rain rate of the city")
-                .addOption(OptionType.STRING,"cityName","the city name",true)
+                .addOption(OptionType.STRING,"cityname","the city name",true)
                 .queue();
     }
     @Override
@@ -49,7 +49,7 @@ public class Listeners extends ListenerAdapter {
         String temperature = "";
         String weather = "";
         String current = "";
-        Double rainRate = 0.0;
+        Double rainrate = 0.0;
         try {
             // connect to weather.com
             Document doc = Jsoup.connect(url).get();
@@ -68,7 +68,7 @@ public class Listeners extends ListenerAdapter {
                 current = currentCondition.text().trim();
 
                 Element rainchance = element.selectFirst(".Accessibility--visuallyHidden--H7O4p");
-                rainRate = Double.parseDouble(rainchance.text().trim());
+                rainrate = Double.parseDouble(rainchance.text().trim());
             }
 
             // output
