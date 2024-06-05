@@ -27,7 +27,7 @@ public class Listeners extends ListenerAdapter {
     }
 
     public void GetCurrentWeather(@NotNull MessageReceivedEvent event){
-        String url = "https://weather.com/weather/today/l/5f9da4381a390189d917ae1caed305047455b2a6496f40b3c96f4d4fd46d20d1"; // 替换为实际的目标网站
+        String url = "https://weather.com/weather/today/l/5f9da4381a390189d917ae1caed305047455b2a6496f40b3c96f4d4fd46d20d1"; // LA
         String temperature = "";
         String weather = "";
         String current = "";
