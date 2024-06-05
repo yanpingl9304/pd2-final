@@ -15,7 +15,6 @@ import java.io.IOException;
 
 public class Listeners extends ListenerAdapter {
 
-
     @Override
     public void onMessageReceived(@NotNull MessageReceivedEvent event) {
         String message = event.getMessage().getContentRaw();
@@ -66,7 +65,7 @@ public class Listeners extends ListenerAdapter {
             embed.setTitle("Current Weather Information");
             embed.setDescription("Temperature : " + FtoC(temperature.substring(0,2))+"\n"
                                  +"Weather : " + weather+"\n"
-                                 +"Current : " + "Day "+FtoC(current.substring(4,6))+" • Night " + FtoC(current.substring(16, 18)));
+                                 +"Current : " + "Day "+FtoC(current.substring(4,6))+" Night " + FtoC(current.substring(16, 18)));
             channel.sendMessage("").setEmbeds(embed.build()).queue();
 
         } catch (IOException e) {
