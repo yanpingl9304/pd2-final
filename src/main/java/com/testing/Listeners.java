@@ -3,9 +3,9 @@ package com.testing;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.api.events.session.ReadyEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -15,25 +15,30 @@ import java.io.IOException;
 
 public class Listeners extends ListenerAdapter {
 
+
     @Override
     public void onMessageReceived(@NotNull MessageReceivedEvent event) {
         String message = event.getMessage().getContentRaw();
-        if(message.equalsIgnoreCase("how's the weather")) {
-            GetCurrentWeather(event);
+        String[] messageSplit = message.split(" ");
+        if(messageSplit[0].equalsIgnoreCase("weather")) {
+            GetCurrentWeather(event,messageSplit[1]);
         }
     }
+//test hello reply if its seen 123123123
+    public void GetCurrentWeather(@NotNull MessageReceivedEvent event ,String city){
 
-    @Override
-    public void onReady(@NotNull ReadyEvent event) {
+        String jsonCityString = Main.readConfigFile("city.json");
+        JSONObject jsonCity = new JSONObject(jsonCityString);
+        String url = jsonCity.getString(city);
 
-    }
+        String jsonIconString = Main.readConfigFile("weatherIcon.json");
+        JSONObject jsonIcon = new JSONObject(jsonIconString);
 
-    public void GetCurrentWeather(@NotNull MessageReceivedEvent event){
         MessageChannel channel = event.getChannel();
-        String url = "https://weather.com/weather/today/l/5f9da4381a390189d917ae1caed305047455b2a6496f40b3c96f4d4fd46d20d1"; // 範例地點LA
         String temperature = "";
         String weather = "";
         String current = "";
+
         try {
             // connect to weather.com
             Document doc = Jsoup.connect(url).get();
@@ -54,11 +59,11 @@ public class Listeners extends ListenerAdapter {
 
             // output
             EmbedBuilder embed = new EmbedBuilder();
-            embed.setImage("https://cdn.icon-icons.com/icons2/350/PNG/512/weather-clear-symbolic_36000.png"); // 範例圖
+            embed.setImage(SelectIcon(weather,jsonIcon));
             embed.setTitle("Current Weather Information");
-            embed.setDescription("Temperature: " + FtoC(temperature.substring(0,2))+"\n"
-                                 +"Weather: " + weather+"\n"
-                                 +"Current: " + "Day "+FtoC(current.substring(4,6))+" • Night " + FtoC(current.substring(16, 18)));
+            embed.setDescription("Temperature : " + FtoC(temperature.substring(0,2))+"\n"
+                                 +"Weather : " + weather+"\n"
+                                 +"Current : " + "Day "+FtoC(current.substring(4,6))+" • Night " + FtoC(current.substring(16, 18)));
             channel.sendMessage("").setEmbeds(embed.build()).queue();
 
         } catch (IOException e) {
@@ -72,4 +77,15 @@ public class Listeners extends ListenerAdapter {
         return Integer.toString((int) Math.round(temperatureC)).concat("°");
     }
 
+    public String SelectIcon(String weather , JSONObject jsonIcon) {
+        String iconUrl = "";
+        if (weather.contains("Sunny")) {
+            iconUrl = jsonIcon.getString("Sunny");
+        } else if (weather.contains("Cloudy")) {
+            iconUrl = jsonIcon.getString("Cloudy");
+        }  else if (weather.contains("Rain")) {
+            iconUrl = jsonIcon.getString("Rain");
+        }
+        return iconUrl;
+    }
 }

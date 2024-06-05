@@ -23,7 +23,7 @@ public class Main {
     private static final String token;
 
     //read config.json
-    private static String readConfigFile(String fileName) {
+     public static String readConfigFile(String fileName) {
         StringBuilder sb = new StringBuilder();
         try (InputStream is = Main.class.getClassLoader().getResourceAsStream(fileName);
              BufferedReader br = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
