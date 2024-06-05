@@ -50,6 +50,6 @@ public class Main {
                   .enableIntents(GatewayIntent.MESSAGE_CONTENT)
                   .build();
         jda.addEventListener(new Listeners());
-
+        jda.addEventListener(new SlashCom());
     }
 }
