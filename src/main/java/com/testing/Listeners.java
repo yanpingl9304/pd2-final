@@ -69,7 +69,7 @@ public class Listeners extends ListenerAdapter {
                 current = currentCondition.text().trim();
 
             }
-            Elements hourlyElements = doc.select(".Column--precip--3JCDO");
+            Elements hourlyElements = doc.select(".Accessibility--visuallyHidden--H7O4p");
 
             for (Element element : hourlyElements) {
 //                Element hourTemp = element.selectFirst("");
