@@ -69,7 +69,7 @@ public class Listeners extends ListenerAdapter {
                 current = currentCondition.text().trim();
 
             }
-            Elements hourlyElements = doc.select(".HourlyWeatherCard--TableWrapper--1OobO");
+            Elements hourlyElements = doc.select(".Column--precip--3JCDO");
 
             for (Element element : hourlyElements) {
 //                Element hourTemp = element.selectFirst("");
