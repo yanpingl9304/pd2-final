@@ -24,7 +24,7 @@ public class Listeners extends ListenerAdapter {
             GetCurrentWeather(event,messageSplit[1]);
         }
     }
-//test hello reply if its seen 123123123
+
     public void GetCurrentWeather(@NotNull MessageReceivedEvent event ,String city){
 
         String jsonCityString = Main.readConfigFile("city.json");
