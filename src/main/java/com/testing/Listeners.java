@@ -77,7 +77,7 @@ public class Listeners extends ListenerAdapter {
             embed.setTitle("Current Weather Information");
             embed.setDescription("Temperature : " + FtoC(temperature.substring(0,2))+"\n"
                                  +"Weather : " + weather+"\n"
-                                 +"Current : " + "Day "+FtoC(current.substring(4,6))+" Night " + FtoC(current.substring(16, 18)
+                                 +"Current : " + "Day "+FtoC(current.substring(4,6))+" Night " + FtoC(current.substring(16, 18) + "\n"
                                  +"RainChance : " + rainrate));
             channel.sendMessage("").setEmbeds(embed.build()).queue();
 
