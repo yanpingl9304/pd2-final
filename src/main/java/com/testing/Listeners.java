@@ -49,14 +49,15 @@ public class Listeners extends ListenerAdapter {
         String temperature = "";
         String weather = "";
         String current = "";
-        Double rainrate = 0.0;
+        String hourlytemp = "";
+        Double hourlyrainrate = 0.0;
         try {
             // connect to weather.com
             Document doc = Jsoup.connect(url).get();
 
-            Elements elements = doc.select(".CurrentConditions--primary--2DOqs");
+            Elements curElements = doc.select(".CurrentConditions--primary--2DOqs");
 
-            for (Element element : elements) {
+            for (Element element : curElements) {
 
                 Element temperatureElement = element.selectFirst(".CurrentConditions--tempValue--MHmYY");
                 temperature = temperatureElement.text().trim();
@@ -67,18 +68,24 @@ public class Listeners extends ListenerAdapter {
                 Element currentCondition = element.selectFirst(".CurrentConditions--tempHiLoValue--3T1DG");
                 current = currentCondition.text().trim();
 
-                Element rainchance = element.selectFirst(".Accessibility--visuallyHidden--H7O4p");
-                rainrate = Double.parseDouble(rainchance.text().trim());
             }
+            Elements hourlyElements = doc.select(".HourlyWeatherCard--TableWrapper--1OobO");
 
+            for (Element element : hourlyElements) {
+                Element hourTemp = element.selectFirst(".TemperatureValue");
+                hourlytemp = hourTemp.text().trim();
+                Element hourlyrainRate = element.selectFirst(".Accessibility--visuallyHidden--H7O4p");
+                hourlyrainrate = Double.parseDouble(hourlyrainRate.text().trim());
+            }
             // output
             EmbedBuilder embed = new EmbedBuilder();
             embed.setImage(SelectIcon(weather,jsonIcon));
             embed.setTitle("Current Weather Information");
             embed.setDescription("Temperature : " + FtoC(temperature.substring(0,2))+"\n"
                                  +"Weather : " + weather+"\n"
-                                 +"Current : " + "Day "+FtoC(current.substring(4,6))+" Night " + FtoC(current.substring(16, 18) + "\n"
-                                 +"RainChance : " + rainrate));
+                                 +"Current : " + "Day "+FtoC(current.substring(4,6))+" Night " + FtoC(current.substring(16, 18) + "\n\n"
+                                 +"Hourly Temp : " + hourlytemp + "\n" )
+                                 +"Hourly Rate : " + hourlyrainrate);
             channel.sendMessage("").setEmbeds(embed.build()).queue();
 
         } catch (IOException e) {
