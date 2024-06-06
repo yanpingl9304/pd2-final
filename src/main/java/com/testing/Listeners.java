@@ -78,11 +78,11 @@ public class Listeners extends ListenerAdapter {
             hourlyElements.add(doc.select(".HourlyWeatherCard--TableWrapper--1OobO")
                     .select(".Ellipsis--ellipsis--3ADai"));//time
             hourlyElements.add(doc.select(".HourlyWeatherCard--TableWrapper--1OobO")
-                    .select(".Column--temp--1sO_J Column--verticalStack--28b4K"));//temperature
+                    .select(".Column--temp--1sO_J.Column--verticalStack--28b4K"));//temperature
             hourlyElements.add(doc.select(".HourlyWeatherCard--TableWrapper--1OobO")
-                    .select(".Column--weatherIcon--2w_Rf Icon--icon--2aW0V Icon--fullTheme--3Fc-5"));//condition
+                    .select(".Column--weatherIcon--2w_Rf.Icon--icon--2aW0V.Icon--fullTheme--3Fc-5"));//condition
             hourlyElements.add(doc.select(".HourlyWeatherCard--TableWrapper--1OobO")
-                    .select(".Icon--icon--2aW0V Icon--fullTheme--3Fc-5"));//weather
+                    .select(".Icon--icon--2aW0V.Icon--fullTheme--3Fc-5"));//weather
             hourlyElements.add(doc.select(".HourlyWeatherCard--TableWrapper--1OobO")
                     .select(".Column--precip--3JCDO"));//rain chance
 
@@ -91,7 +91,7 @@ public class Listeners extends ListenerAdapter {
             hourlycondition = hourlyElements.get(2).text().trim();
             hourlyweather = hourlyElements.get(3).text().trim();
             hourlyrainrate = hourlyElements.get(4).text().replaceAll("[^0-9]"," ").trim().replaceAll("\\s+","");
-            System.out.println(/*hourlytime + "0\n" + hourlytemp + "1\n" + hourlycondition + "2\n" + hourlyweather + "3\n"*/ hourlyrainrate+" 4");
+            System.out.println(hourlytime + "0\n" + hourlytemp + "1\n" + hourlycondition + "2\n" + hourlyweather + "3\n" + hourlyrainrate+" 4");
             // output
             EmbedBuilder embed = new EmbedBuilder();
             embed.setImage(SelectIcon(weather,jsonIcon));
