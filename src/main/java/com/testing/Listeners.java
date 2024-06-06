@@ -84,13 +84,13 @@ public class Listeners extends ListenerAdapter {
             hourlyElements.add(doc.select(".HourlyWeatherCard--TableWrapper--1OobO")
                     .select(".Icon--icon--2aW0V.Icon--fullTheme--3Fc-5"));//weather
             hourlyElements.add(doc.select(".HourlyWeatherCard--TableWrapper--1OobO")
-                    .select(".Column--precip--3JCDO"));//rain chance
+                    .select("div.Column--precip--3JCDO"));//rain chance
 
             hourlytime = hourlyElements.get(0).text().trim();
             hourlytemp = hourlyElements.get(1).text().trim();
             hourlycondition = hourlyElements.get(2).text().trim();
             hourlyweather = hourlyElements.get(3).text().trim();
-            hourlyrainrate = hourlyElements.get(4).text().replaceAll("[^0-9]"," ").trim().replaceAll("\\s+","");
+            hourlyrainrate = hourlyElements.get(4).text().replaceAll("[^0-9]"," ").trim().replaceAll("\\s+"," ");
             System.out.println(hourlytime + "0\n" + hourlytemp + "1\n" + hourlycondition + "2\n" + hourlyweather + "3\n" + hourlyrainrate+" 4");
             // output
             EmbedBuilder embed = new EmbedBuilder();
