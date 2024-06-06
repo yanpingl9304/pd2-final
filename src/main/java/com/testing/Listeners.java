@@ -34,12 +34,22 @@ public class Listeners extends ListenerAdapter {
         String[] messageSplit = message.split(" ");
         if(messageSplit[0].equalsIgnoreCase("weather")) {
             if(messageSplit.length == 1) {
-                event.getChannel().sendMessage("Usage : weather [city]").queue();
-            } else {
+                event.getChannel().sendMessage("Usage : weather [city] [function]").queue();
+            } else if(messageSplit.length == 2) {
                 GetCurrentWeather(event,messageSplit[1]);
+            } else if(messageSplit.length == 3) {
+                String cityName = messageSplit[1];
+                switch(messageSplit[2]){
+                    case "detail" :
+                        getDetailWeather(event,cityName);
+                        break;
+                    default :
+                        break;
+                }
             }
         }
     }
+
     public void GetCurrentWeather(@NotNull MessageReceivedEvent event ,String city){
 
         String jsonCityString = Main.readConfigFile("city.json");
@@ -108,12 +118,53 @@ public class Listeners extends ListenerAdapter {
             e.printStackTrace();
         }
     }
+    public void getDetailWeather(MessageReceivedEvent event ,String city){
+        String jsonCityString = Main.readConfigFile("city.json");
+        JSONObject jsonCity = new JSONObject(jsonCityString);
+        String url = jsonCity.getString(city);
+        MessageChannel channel = event.getChannel();
+
+        String temperature = "";     //0
+        String wind = "";            //1
+        String Humidity = "";        //2
+        String UV = "";              //5
+
+        try {
+            // connect to weather.com
+            Document doc = Jsoup.connect(url).get();
+            List<String> detailWeather = new ArrayList<>();
+            Elements curElements = doc.select(".CurrentConditions--primary--2DOqs");
+
+            Elements elements = doc.select("div.WeatherDetailsListItem--wxData--kK35q");
+            for(Element element : elements) {
+                detailWeather.add(element.text());
+            }
+            temperature = detailWeather.get(0);
+            wind = detailWeather.get(1).replace("Wind Direction", "");
+            Humidity = detailWeather.get(2);
+            UV = detailWeather.get(5);
+            // output
+            EmbedBuilder embed = new EmbedBuilder();
+            embed.setTitle("Current Weather Detail Information");
+            embed.setDescription("Temperature High / Low : " + FtoC(temperature.substring(0,2))+" / "+FtoC(temperature.substring(3,5))+"\n"
+                                    +"Wind : " + wind+"\n"
+                                    +"Humidity : " + Humidity + "\n"
+                                    +"UV : " + UV);
+
+            channel.sendMessage("").setEmbeds(embed.build()).queue();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     public String FtoC(String temperature) {
         if(temperature.contains("°")) temperature = temperature.replace("°","");
-
+        if(temperature.contains("--")) return ("--");
         double temperatureF = Double.parseDouble(temperature);
         double temperatureC = (temperatureF - 32) / 9 * 5;
+
         return Integer.toString((int) Math.round(temperatureC)).concat("°");
+
     }
 
     public String SelectIcon(String weather , JSONObject jsonIcon) {
