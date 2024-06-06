@@ -122,6 +122,8 @@ public class Listeners extends ListenerAdapter {
             iconUrl = jsonIcon.getString("Cloudy");
         }  else if (weather.contains("Rain")) {
             iconUrl = jsonIcon.getString("Rain");
+        } else {
+            iconUrl = null;
         }
         return iconUrl;
     }
