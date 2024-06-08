@@ -15,6 +15,8 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -141,15 +143,17 @@ public class Listeners extends ListenerAdapter {
             }
             temperature = detailWeather.get(0);
             wind = detailWeather.get(1).replace("Wind Direction", "");
+            BigDecimal WindSpeedInKph = new BigDecimal(Double.parseDouble(wind.split(" ")[0]) * 1.6).setScale(2, RoundingMode.HALF_UP);
             Humidity = detailWeather.get(2);
             UV = detailWeather.get(5);
+
             // output
             EmbedBuilder embed = new EmbedBuilder();
             embed.setTitle("Current Weather Detail Information");
             embed.setDescription("Temperature High / Low : " + FtoC(temperature.substring(0,2))+" / "+FtoC(temperature.substring(3,5))+"\n"
-                                    +"Wind : " + wind+"\n"
-                                    +"Humidity : " + Humidity + "\n"
-                                    +"UV : " + UV);
+                                    +"Wind : " + WindSpeedInKph +" KM/H \n"
+                                    +"Humidity : " + Humidity + " , "+HumidityLevel(Humidity) + "\n"
+                                    +"UV : " + UV + " , "+UVLevel(UV));
 
             channel.sendMessage("").setEmbeds(embed.build()).queue();
 
@@ -198,5 +202,36 @@ public class Listeners extends ListenerAdapter {
 
         return resultList.toArray(new String[0]);
     }
+    public String HumidityLevel(String Humidity){
+        int humidityInt = Integer.parseInt(Humidity.replace("%",""));
+        String level = "";
+        if(humidityInt < 30) {
+            level = "TOO DRY";
+        } else if (30<=humidityInt && humidityInt < 60) {
+            level = "COMFORTABLE";
+        } else if (60<=humidityInt && humidityInt < 100) {
+            level = "TOO HIGH";
+        } else if (humidityInt == 100) {
+            level = "MAYBE RAINY NOW";
+        }
+        return level;
+    }
 
+    public String UVLevel(String UV){
+        String[] temp = UV.split(" ");
+        int UVLevel = Integer.parseInt(temp[0]);
+        String level = "";
+        if(0<=UVLevel && UVLevel <=2) {
+            level = "LOW";
+        } else if (3<=UVLevel && UVLevel <=5) {
+            level = "MODERATE";
+        } else if (6<=UVLevel && UVLevel <=7) {
+            level = "HIGH";
+        } else if (8<=UVLevel && UVLevel <=10) {
+            level = "VERY HIGH";
+        } else if (11<=UVLevel) {
+            level = "EXTREME";
+        }
+        return level;
+    }
 }
