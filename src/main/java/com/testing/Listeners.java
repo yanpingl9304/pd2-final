@@ -45,6 +45,9 @@ public class Listeners extends ListenerAdapter {
                     case "detail" :
                         getDetailWeather(event,cityName);
                         break;
+                    case "daily" :
+                        getDailyForecast(event,cityName);
+                        break;
                     default :
                         break;
                 }
@@ -161,6 +164,39 @@ public class Listeners extends ListenerAdapter {
             e.printStackTrace();
         }
     }
+
+    public void getDailyForecast(MessageReceivedEvent event ,String city){
+        String jsonCityString = Main.readConfigFile("city.json");
+        JSONObject jsonCity = new JSONObject(jsonCityString);
+        String url = jsonCity.getString(city);
+        MessageChannel channel = event.getChannel();
+
+        try {
+            // connect to weather.com
+            Document doc = Jsoup.connect(url).get();
+            List<String> detailWeather = new ArrayList<>();
+            Elements elements = doc.select(".DailyWeatherCard--TableWrapper--2bB37");
+            String sentence = "";
+            for(Element element : elements) {
+                sentence = element.text();
+            }
+            String[] words = sentence.split("%");
+            for(String x : words) extractWeatherInfo(x);
+            // output
+//            EmbedBuilder embed = new EmbedBuilder();
+//            embed.setTitle("Current Weather Detail Information");
+//            embed.setDescription("Temperature High / Low : " + FtoC(temperature.substring(0,2))+" / "+FtoC(temperature.substring(3,5))+"\n"
+//                    +"Wind : " + WindSpeedInKph +" KM/H \n"
+//                    +"Humidity : " + Humidity + " , "+HumidityLevel(Humidity) + "\n"
+//                    +"UV : " + UV + " , "+UVLevel(UV));
+//
+//            channel.sendMessage("").setEmbeds(embed.build()).queue();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public String FtoC(String temperature) {
         if(temperature.contains("°")) temperature = temperature.replace("°","");
         if(temperature.contains("--")) return ("--");
@@ -233,5 +269,34 @@ public class Listeners extends ListenerAdapter {
             level = "EXTREME";
         }
         return level;
+    }
+
+    static void extractWeatherInfo(String input) {
+        String[] array = input.replace("Rain Chance of Rain" ,"").split(" ");
+        String day = "";
+        String weather ="";
+        String temp= "";
+        String rainChance = array[array.length -1 ].concat("%");
+        if(array[0].equalsIgnoreCase("today")) {
+            day = array[0];
+            temp = array[1];
+            int index = 3;
+            while(!array[index].matches("\\d+")) {
+                weather += array[index] + " ";
+                index++;
+            }
+        }  else {
+            day = array[1].trim() + " " + array[2];
+            temp = array[3];
+            int index = 5;
+            while(!array[index].matches("\\d+")) {
+                weather += array[index] + " ";
+                index++;
+            }
+        }
+        System.out.println(day);
+        System.out.println(weather);
+        System.out.println(temp);
+        System.out.println("Chance of Rain "+rainChance);
     }
 }
