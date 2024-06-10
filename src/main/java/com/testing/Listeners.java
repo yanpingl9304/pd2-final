@@ -270,7 +270,7 @@ public class Listeners extends ListenerAdapter {
         }
         return level;
     }
-
+    // asd
     static void extractWeatherInfo(String input) {
         String[] array = input.replace("Rain Chance of Rain" ,"").split(" ");
         String day = "";
