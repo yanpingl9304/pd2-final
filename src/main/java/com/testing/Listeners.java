@@ -153,7 +153,7 @@ public class Listeners extends ListenerAdapter {
             // output
             EmbedBuilder embed = new EmbedBuilder();
             embed.setTitle("Current Weather Detail Information");
-            embed.setDescription("Temperature High / Low : " + FtoC(temperature.substring(0,2))+" / "+FtoC(temperature.substring(3,5))+"\n"
+            embed.setDescription("Temperature High / Low : " + FtoC(temperature.substring(0,2))+" / "+FtoC(temperature.substring(4,6)) + "\n"
                                     +"Wind : " + WindSpeedInKph +" KM/H \n"
                                     +"Humidity : " + Humidity + " , "+HumidityLevel(Humidity) + "\n"
                                     +"UV : " + UV + " , "+UVLevel(UV));
@@ -183,14 +183,15 @@ public class Listeners extends ListenerAdapter {
             String[] words = sentence.split("%");
             for(String x : words) extractWeatherInfo(x);
             // output
-//            EmbedBuilder embed = new EmbedBuilder();
-//            embed.setTitle("Current Weather Detail Information");
-//            embed.setDescription("Temperature High / Low : " + FtoC(temperature.substring(0,2))+" / "+FtoC(temperature.substring(3,5))+"\n"
-//                    +"Wind : " + WindSpeedInKph +" KM/H \n"
-//                    +"Humidity : " + Humidity + " , "+HumidityLevel(Humidity) + "\n"
-//                    +"UV : " + UV + " , "+UVLevel(UV));
-//
-//            channel.sendMessage("").setEmbeds(embed.build()).queue();
+            EmbedBuilder embed = new EmbedBuilder();
+            embed.setTitle("Daily Weather Forecast of "+ city);
+            StringBuilder description = new StringBuilder();
+            for(String x : words) {
+                description.append(extractWeatherInfo(x));
+                description.append("\n\n");
+            }
+            embed.setDescription(description.toString());
+            channel.sendMessage("").setEmbeds(embed.build()).queue();
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -198,6 +199,17 @@ public class Listeners extends ListenerAdapter {
     }
 
     public String FtoC(String temperature) {
+        if(temperature.contains("/")) {
+            String[] temperatureArray = temperature.replaceAll("°","").split("/");
+            StringBuilder returnString = new StringBuilder();
+            for(int i = 0; i < temperatureArray.length; i++){
+                double temperatureF = Double.parseDouble(temperatureArray[i]);
+                double temperatureC = (temperatureF - 32) / 9 * 5;
+                returnString.append(Integer.toString((int) Math.round(temperatureC)).concat("°"));
+                if(i != temperatureArray.length - 1) returnString.append("/");
+            }
+            return returnString.toString();
+        }
         if(temperature.contains("°")) temperature = temperature.replace("°","");
         if(temperature.contains("--")) return ("--");
         double temperatureF = Double.parseDouble(temperature);
@@ -270,8 +282,8 @@ public class Listeners extends ListenerAdapter {
         }
         return level;
     }
-    // asd
-    static void extractWeatherInfo(String input) {
+
+    public String extractWeatherInfo(String input) {
         String[] array = input.replace("Rain Chance of Rain" ,"").split(" ");
         String day = "";
         String weather ="";
@@ -294,9 +306,10 @@ public class Listeners extends ListenerAdapter {
                 index++;
             }
         }
-        System.out.println(day);
-        System.out.println(weather);
-        System.out.println(temp);
-        System.out.println("Chance of Rain "+rainChance);
+        return  day + "\n" +
+                weather + "\n" +
+                FtoC(temp) + "\n" +
+                "Chance of Rain "+rainChance +
+                "\n==========================";
     }
 }
