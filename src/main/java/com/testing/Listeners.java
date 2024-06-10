@@ -174,20 +174,18 @@ public class Listeners extends ListenerAdapter {
         try {
             // connect to weather.com
             Document doc = Jsoup.connect(url).get();
-            List<String> detailWeather = new ArrayList<>();
             Elements elements = doc.select(".DailyWeatherCard--TableWrapper--2bB37");
             String sentence = "";
             for(Element element : elements) {
                 sentence = element.text();
             }
-            String[] words = sentence.split("%");
-            for(String x : words) extractWeatherInfo(x);
+            String[] weatherInformation = sentence.split("%");
             // output
             EmbedBuilder embed = new EmbedBuilder();
             embed.setTitle("Daily Weather Forecast of "+ city);
             StringBuilder description = new StringBuilder();
-            for(String x : words) {
-                description.append(extractWeatherInfo(x));
+            for(String daily : weatherInformation) {
+                description.append(extractWeatherInfo(daily));
                 description.append("\n\n");
             }
             embed.setDescription(description.toString());
@@ -284,32 +282,34 @@ public class Listeners extends ListenerAdapter {
     }
 
     public String extractWeatherInfo(String input) {
-        String[] array = input.replace("Rain Chance of Rain" ,"").split(" ");
-        String day = "";
-        String weather ="";
-        String temp= "";
-        String rainChance = array[array.length -1 ].concat("%");
-        if(array[0].equalsIgnoreCase("today")) {
+        String[] array = input.replace("Rain Chance of Rain", "").split(" ");
+        String day;
+        String temp;
+        String rainChance = array[array.length - 1] + "%";
+        StringBuilder weatherBuilder = new StringBuilder();
+        int startIndex;
+
+        if (array[0].equalsIgnoreCase("today")) {
             day = array[0];
             temp = array[1];
-            int index = 3;
-            while(!array[index].matches("\\d+")) {
-                weather += array[index] + " ";
-                index++;
-            }
-        }  else {
+            startIndex = 3;
+        } else {
             day = array[1].trim() + " " + array[2];
             temp = array[3];
-            int index = 5;
-            while(!array[index].matches("\\d+")) {
-                weather += array[index] + " ";
-                index++;
-            }
+            startIndex = 5;
         }
-        return  day + "\n" +
+
+        while (!array[startIndex].matches("\\d+")) {
+            weatherBuilder.append(array[startIndex]).append(" ");
+            startIndex++;
+        }
+
+        String weather = weatherBuilder.toString().trim();
+
+        return day + "\n" +
                 weather + "\n" +
                 FtoC(temp) + "\n" +
-                "Chance of Rain "+rainChance +
+                "Chance of Rain " + rainChance +
                 "\n==========================";
     }
 }
