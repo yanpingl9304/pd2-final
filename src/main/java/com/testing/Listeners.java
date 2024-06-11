@@ -94,7 +94,7 @@ public class Listeners extends ListenerAdapter {
             hourlyElements.add(doc.select("div.HourlyWeatherCard--TableWrapper--1OobO")
                     .select(".Column--weatherIcon--2w_Rf.Icon--icon--2aW0V.Icon--fullTheme--3Fc-5"));//condition
             /*hourlyElements.add(doc.select("div.HourlyWeatherCard--TableWrapper--1OobO")
-                    .select(".Icon--icon--2aW0V.Icon--fullTheme--3Fc-5"));//weather*/
+                    .select(".Icon--icon--2aW0V.Icon--fullTheme--3Fc-5"));//weather*///
             hourlyElements.add(doc.select("div.HourlyWeatherCard--TableWrapper--1OobO")
                     .select("div.Column--precip--3JCDO"));//rain chance
             String[] hourlytime = splitTime(hourlyElements.get(0).text().trim());
