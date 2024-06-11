@@ -33,6 +33,11 @@ public class Listeners extends ListenerAdapter {
                 ,new OptionData(OptionType.STRING,"hourly","Y if you want hourly forecast",false)
                 ).queue();*/
         guild.upsertCommand("help","for command options").queue();
+        guild.upsertCommand("addcity","adding the city to the list")
+                .addOptions(new OptionData(OptionType.STRING,"city","the city name",true),
+                new OptionData(OptionType.STRING,"link","the link of the city(must be a weather.com link)",true))
+                .queue();
+
     }
 
     @Override
