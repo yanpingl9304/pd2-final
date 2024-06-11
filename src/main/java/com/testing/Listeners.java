@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.events.session.ReadyEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import org.jetbrains.annotations.NotNull;
+
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -51,7 +52,7 @@ public class Listeners extends ListenerAdapter {
                     case "hourly" :
                         getHourlyForecast(event,cityName);
                     default :
-                        event.getChannel().sendMessage("Usage : weather [city] [function] ,Current we have  : \n" +
+                        event.getChannel().sendMessage("Usage : weather [city] [function] , Current we have functions : \n" +
                                                        "detail : getDetailWeather\n" +
                                                        "daily : getDailyWeather\n" +
                                                        "hourly : getHourlyWeather").queue();
