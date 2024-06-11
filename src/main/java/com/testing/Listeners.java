@@ -93,22 +93,22 @@ public class Listeners extends ListenerAdapter {
                     .select(".Column--temp--1sO_J.Column--verticalStack--28b4K"));//temperature
             hourlyElements.add(doc.select("div.HourlyWeatherCard--TableWrapper--1OobO")
                     .select(".Column--weatherIcon--2w_Rf.Icon--icon--2aW0V.Icon--fullTheme--3Fc-5"));//condition
-            hourlyElements.add(doc.select("div.HourlyWeatherCard--TableWrapper--1OobO")
-                    .select(".Icon--icon--2aW0V.Icon--fullTheme--3Fc-5"));//weather
+            /*hourlyElements.add(doc.select("div.HourlyWeatherCard--TableWrapper--1OobO")
+                    .select(".Icon--icon--2aW0V.Icon--fullTheme--3Fc-5"));//weather*/
             hourlyElements.add(doc.select("div.HourlyWeatherCard--TableWrapper--1OobO")
                     .select("div.Column--precip--3JCDO"));//rain chance
             String[] hourlytime = splitTime(hourlyElements.get(0).text().trim());
             String[] hourlytemp = hourlyElements.get(1).text().replaceAll("[^0-9]", " ").trim().replaceAll("\\s+"," ").split(" ");
             //String[] hourlycondition = hourlyElements.get(2).text().trim().split(" ");
             String hourlycondition = hourlyElements.get(2).text();
-            String hourlyweather = hourlyElements.get(3).text();
-            String[] hourlyrainrate = hourlyElements.get(4).text().replaceAll("[^0-9]"," ").trim().replaceAll("\\s+"," ").split(" ");
+            //String hourlyweather = hourlyElements.get(3).text();
+            String[] hourlyrainrate = hourlyElements.get(3).text().replaceAll("[^0-9]"," ").trim().replaceAll("\\s+"," ").split(" ");
 
             // System.out.println(hourlytime + "0\n" + hourlytemp + "1\n" + hourlycondition + "2\n" + hourlyweather + "3\n" + hourlyrainrate+" 4");
             for(int i = 0; i < hourlytime.length; i++){
                 //System.out.println("\u00B0");
                 hourlytemp[i]+= "\u00B0";
-                System.out.println("i = " + i + "\n" + hourlytime[i]+" "+hourlytemp[i]+" "+ "hourlycondition = " + hourlycondition+ " \n" +  "hourlyweather = " + hourlyweather +" \n" +  hourlyrainrate[i]+"%");
+                System.out.println("i = " + i + "\n" + hourlytime[i]+" "+hourlytemp[i]+" "+ "hourlycondition = " + hourlycondition +" \n" +  hourlyrainrate[i]+"%");
             }
             // output
             EmbedBuilder embed = new EmbedBuilder();
