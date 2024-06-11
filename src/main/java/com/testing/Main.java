@@ -26,7 +26,7 @@ public class Main {
      public static String readConfigFile(String fileName) {
         StringBuilder sb = new StringBuilder();
         try (InputStream is = Main.class.getClassLoader().getResourceAsStream(fileName);
-             BufferedReader br = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
+               BufferedReader br = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
             String line;
             while ((line = br.readLine()) != null) sb.append(line);
         } catch (Exception e) {

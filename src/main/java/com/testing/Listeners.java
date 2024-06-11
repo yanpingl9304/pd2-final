@@ -48,6 +48,8 @@ public class Listeners extends ListenerAdapter {
                     case "daily" :
                         getDailyForecast(event,cityName);
                         break;
+                    case "hourly" :
+                        getHourlyForecast(event,cityName);
                     default :
                         break;
                 }
@@ -86,30 +88,7 @@ public class Listeners extends ListenerAdapter {
                 current = currentCondition.text().trim();
 
             }
-            List<Elements> hourlyElements = new ArrayList<>();
-            hourlyElements.add(doc.select("div.HourlyWeatherCard--TableWrapper--1OobO")
-                    .select(".Ellipsis--ellipsis--3ADai"));//time
-            hourlyElements.add(doc.select("div.HourlyWeatherCard--TableWrapper--1OobO")
-                    .select(".Column--temp--1sO_J.Column--verticalStack--28b4K"));//temperature
-            hourlyElements.add(doc.select("div.HourlyWeatherCard--TableWrapper--1OobO")
-                    .select(".Column--weatherIcon--2w_Rf.Icon--icon--2aW0V.Icon--fullTheme--3Fc-5"));//condition
-            /*hourlyElements.add(doc.select("div.HourlyWeatherCard--TableWrapper--1OobO")
-                    .select(".Icon--icon--2aW0V.Icon--fullTheme--3Fc-5"));//weather*///
-            hourlyElements.add(doc.select("div.HourlyWeatherCard--TableWrapper--1OobO")
-                    .select("div.Column--precip--3JCDO"));//rain chance
-            String[] hourlytime = splitTime(hourlyElements.get(0).text().trim());
-            String[] hourlytemp = hourlyElements.get(1).text().replaceAll("[^0-9]", " ").trim().replaceAll("\\s+"," ").split(" ");
-            //String[] hourlycondition = hourlyElements.get(2).text().trim().split(" ");
-            String hourlycondition = hourlyElements.get(2).text();
-            //String hourlyweather = hourlyElements.get(3).text();
-            String[] hourlyrainrate = hourlyElements.get(3).text().replaceAll("[^0-9]"," ").trim().replaceAll("\\s+"," ").split(" ");
 
-            // System.out.println(hourlytime + "0\n" + hourlytemp + "1\n" + hourlycondition + "2\n" + hourlyweather + "3\n" + hourlyrainrate+" 4");
-            for(int i = 0; i < hourlytime.length; i++){
-                //System.out.println("\u00B0");
-                hourlytemp[i]+= "\u00B0";
-                System.out.println("i = " + i + "\n" + hourlytime[i]+" "+hourlytemp[i]+" "+ "hourlycondition = " + hourlycondition +" \n" +  hourlyrainrate[i]+"%");
-            }
             // output
             EmbedBuilder embed = new EmbedBuilder();
             embed.setImage(SelectIcon(weather,jsonIcon));
@@ -167,7 +146,51 @@ public class Listeners extends ListenerAdapter {
             e.printStackTrace();
         }
     }
+    public void getHourlyForecast (MessageReceivedEvent event ,String city) {
+        String jsonCityString = Main.readConfigFile("city.json");
+        JSONObject jsonCity = new JSONObject(jsonCityString);
+        String url = jsonCity.getString(city);
+        MessageChannel channel = event.getChannel();
+        try {
+            Document doc = Jsoup.connect(url).get();
+            List<Elements> hourlyElements = new ArrayList<>();
+            hourlyElements.add(doc.select("div.HourlyWeatherCard--TableWrapper--1OobO")
+                    .select(".Ellipsis--ellipsis--3ADai"));//time
+            hourlyElements.add(doc.select("div.HourlyWeatherCard--TableWrapper--1OobO")
+                    .select(".Column--temp--1sO_J.Column--verticalStack--28b4K"));//temperature
+            hourlyElements.add(doc.select("div.HourlyWeatherCard--TableWrapper--1OobO")
+                    .select(".Column--weatherIcon--2w_Rf.Icon--icon--2aW0V.Icon--fullTheme--3Fc-5"));//condition
+            /*hourlyElements.add(doc.select("div.HourlyWeatherCard--TableWrapper--1OobO")
+                    .select(".Icon--icon--2aW0V.Icon--fullTheme--3Fc-5"));//weather*///
+            hourlyElements.add(doc.select("div.HourlyWeatherCard--TableWrapper--1OobO")
+                    .select("div.Column--precip--3JCDO"));//rain chance
+            System.out.println(doc.select("div.HourlyWeatherCard--TableWrapper--1OobO").text());
+            String hourlyarray[] = doc.select("div.HourlyWeatherCard--TableWrapper--1OobO").text().trim().split("%");
+            System.out.println(hourlyarray.length);
+            //String[] hourlytime = splitTime(hourlyElements.get(0).text().trim());
+            for (int i = 0; i < hourlyarray.length; i++) {
+                System.out.println(hourlyarray[i]);
+            }
+            EmbedBuilder embed = new EmbedBuilder();
+            embed.setTitle("Hourly Weather Forecast of "+ city);
+            StringBuilder description = new StringBuilder();
+            for(String hourly : hourlyarray) {
+                description.append(extractHourlyWeatherInfo(hourly));
+                description.append("\n\n");
+            }
+            embed.setDescription(description.toString());
+            channel.sendMessage("").setEmbeds(embed.build()).queue();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
+        /*for (String eachcondition : hourlyconditionarray) {
+            System.out.println(eachcondition);
+            eachcondition.replace("_"," ");
+        }
+        String[] hourlyrainrate = hourlyElements.get(3).text().replaceAll("[^0-9]"," ").trim().replaceAll("\\s+"," ").split(" ");*/
+
+    }
     public void getDailyForecast(MessageReceivedEvent event ,String city){
         String jsonCityString = Main.readConfigFile("city.json");
         JSONObject jsonCity = new JSONObject(jsonCityString);
@@ -188,7 +211,7 @@ public class Listeners extends ListenerAdapter {
             embed.setTitle("Daily Weather Forecast of "+ city);
             StringBuilder description = new StringBuilder();
             for(String daily : weatherInformation) {
-                description.append(extractWeatherInfo(daily));
+                description.append(extractDailyWeatherInfo(daily));
                 description.append("\n\n");
             }
             embed.setDescription(description.toString());
@@ -201,7 +224,7 @@ public class Listeners extends ListenerAdapter {
 
     public String FtoC(String temperature) {
         if(temperature.contains("/")) {
-            String[] temperatureArray = temperature.replaceAll("°","").split("/");
+            String[] temperatureArray = temperature.replaceAll("\u00B0","").split("/");
             StringBuilder returnString = new StringBuilder();
             for(int i = 0; i < temperatureArray.length; i++){
                 double temperatureF = Double.parseDouble(temperatureArray[i]);
@@ -211,12 +234,12 @@ public class Listeners extends ListenerAdapter {
             }
             return returnString.toString();
         }
-        if(temperature.contains("°")) temperature = temperature.replace("°","");
+        if(temperature.contains("\u00B0")) temperature = temperature.replace("\u00B0","");
         if(temperature.contains("--")) return ("--");
         double temperatureF = Double.parseDouble(temperature);
         double temperatureC = (temperatureF - 32) / 9 * 5;
 
-        return Integer.toString((int) Math.round(temperatureC)).concat("°");
+        return Integer.toString((int) Math.round(temperatureC)).concat("\u00B0");
 
     }
 
@@ -284,7 +307,7 @@ public class Listeners extends ListenerAdapter {
         return level;
     }
 
-    public String extractWeatherInfo(String input) {
+    public String extractDailyWeatherInfo(String input) {
         String[] array = input.replace("Rain Chance of Rain", "").split(" ");
         String day;
         String temp;
@@ -300,6 +323,37 @@ public class Listeners extends ListenerAdapter {
             day = array[1].trim() + " " + array[2];
             temp = array[3];
             startIndex = 5;
+        }
+
+        while (!array[startIndex].matches("\\d+")) {
+            weatherBuilder.append(array[startIndex]).append(" ");
+            startIndex++;
+        }
+
+        String weather = weatherBuilder.toString().trim();
+
+        return day + "\n" +
+                weather + "\n" +
+                FtoC(temp) + "\n" +
+                "Chance of Rain " + rainChance +
+                "\n==========================";
+    }
+    public String extractHourlyWeatherInfo(String input) {
+        String[] array = input.replace("Rain Chance of Rain", "").split(" ");
+        String day;
+        String temp;
+        String rainChance = array[array.length - 1] + "%";
+        StringBuilder weatherBuilder = new StringBuilder();
+        int startIndex;
+
+        if (array[0].equalsIgnoreCase("Now")) {
+            day = array[0];
+            temp = array[1];
+            startIndex = 2;
+        } else {
+            day = array[1].trim() + " " + array[2];
+            temp = array[3];
+            startIndex = 4;
         }
 
         while (!array[startIndex].matches("\\d+")) {
