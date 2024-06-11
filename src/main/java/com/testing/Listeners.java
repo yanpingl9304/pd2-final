@@ -26,11 +26,12 @@ import java.util.regex.Matcher;
 public class Listeners extends ListenerAdapter {
     @Override
     public void onReady(@NotNull ReadyEvent event) {
-        Guild guild = event.getJDA().getGuildById(755721077128298536L);
-        guild.upsertCommand("rainrate","gets the rain rate of the city")
+        Guild guild = event.getJDA().getGuildById(1247097625216548935L);
+        /*guild.upsertCommand("rainrate","gets the rain rate of the city")
                 .addOptions(new OptionData(OptionType.STRING,"cityname","the city name",true)
                 ,new OptionData(OptionType.STRING,"hourly","Y if you want hourly forecast",false)
-                ).queue();
+                ).queue();*/
+        guild.upsertCommand("help","for command options").queue();
     }
     @Override
     public void onMessageReceived(@NotNull MessageReceivedEvent event) {

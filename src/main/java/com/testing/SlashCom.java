@@ -9,7 +9,8 @@ public class SlashCom extends ListenerAdapter {
 
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
-        if (event.getName().equals("rainrate")) {
+        if (!event.getName().equals("help")) return;
+        /*if (event.getName().equals("rainrate")) {
             OptionMapping cityName = event.getOption("cityname");
             String city = cityName.getAsString();
             OptionMapping hourly = event.getOption("hourly");
@@ -17,6 +18,12 @@ public class SlashCom extends ListenerAdapter {
 
             }
             //event.reply("hello").queue();
-        }
+        }*/
+
+            event.reply("Usage : weather [city(required)] [options], the options for now are:\n"
+            + "detail : gets detail of the weather\n"
+            + "daily : gets daily weather forecast\n"
+            + "hourly : gets hourly weather forecase\n").queue();
+
     }
 }
