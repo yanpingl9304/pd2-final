@@ -98,14 +98,17 @@ public class Listeners extends ListenerAdapter {
             hourlyElements.add(doc.select("div.HourlyWeatherCard--TableWrapper--1OobO")
                     .select("div.Column--precip--3JCDO"));//rain chance
             String[] hourlytime = splitTime(hourlyElements.get(0).text().trim());
-            String[] hourlytemp = hourlyElements.get(1).text().trim().split(" ");
-            String[] hourlycondition = hourlyElements.get(2).text().trim().split(" ");
-            String[] hourlyweather = hourlyElements.get(3).text().trim().split(" ");
+            String[] hourlytemp = hourlyElements.get(1).text().replaceAll("[^0-9]", " ").trim().replaceAll("\\s+"," ").split(" ");
+            //String[] hourlycondition = hourlyElements.get(2).text().trim().split(" ");
+            String hourlycondition = hourlyElements.get(2).text();
+            String hourlyweather = hourlyElements.get(3).text();
             String[] hourlyrainrate = hourlyElements.get(4).text().replaceAll("[^0-9]"," ").trim().replaceAll("\\s+"," ").split(" ");
 
             // System.out.println(hourlytime + "0\n" + hourlytemp + "1\n" + hourlycondition + "2\n" + hourlyweather + "3\n" + hourlyrainrate+" 4");
             for(int i = 0; i < hourlytime.length; i++){
-                System.out.println(hourlytime[i]+" "+FtoC(hourlytemp[i])+" "+hourlyrainrate[i]+"%");
+                //System.out.println("\u00B0");
+                hourlytemp[i]+= "\u00B0";
+                System.out.println("i = " + i + "\n" + hourlytime[i]+" "+hourlytemp[i]+" "+ "hourlycondition = " + hourlycondition+ " \n" +  "hourlyweather = " + hourlyweather +" \n" +  hourlyrainrate[i]+"%");
             }
             // output
             EmbedBuilder embed = new EmbedBuilder();
@@ -113,7 +116,7 @@ public class Listeners extends ListenerAdapter {
             embed.setTitle("Current Weather Information");
             embed.setDescription("Temperature : " + FtoC(temperature.substring(0,2))+"\n"
                                  +"Weather : " + weather+"\n"
-                                 +"Current : " + "Day "+FtoC(current.substring(4,6))+"  • Night " + FtoC(current.substring(16, 18) + "\n\n"
+                                 +"Current : " + "Day "+FtoC(current.substring(4,6))+ "  \u2022 Night " + FtoC(current.substring(16, 18) + "\n\n"
 //                                 +"Hourly Temp : " + hourlytemp + "\n" )
 //                                 +"Hourly Rate : " + hourlyrainrate);
                     ));
