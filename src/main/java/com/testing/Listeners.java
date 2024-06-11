@@ -51,6 +51,10 @@ public class Listeners extends ListenerAdapter {
                     case "hourly" :
                         getHourlyForecast(event,cityName);
                     default :
+                        event.getChannel().sendMessage("Usage : weather [city] [function] ,Current we have  : \n" +
+                                                       "detail : getDetailWeather\n" +
+                                                       "daily : getDailyWeather\n" +
+                                                       "hourly : getHourlyWeather").queue();
                         break;
                 }
             }
@@ -131,7 +135,6 @@ public class Listeners extends ListenerAdapter {
             BigDecimal WindSpeedInKph = new BigDecimal(Double.parseDouble(wind.split(" ")[0]) * 1.6).setScale(2, RoundingMode.HALF_UP);
             Humidity = detailWeather.get(2);
             UV = detailWeather.get(5);
-            System.out.println(temperature.substring(3,4));
             // output
             EmbedBuilder embed = new EmbedBuilder();
             embed.setTitle("Current Weather Detail Information");
