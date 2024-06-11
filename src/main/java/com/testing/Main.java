@@ -51,5 +51,6 @@ public class Main {
                   .build();
         jda.addEventListener(new Listeners());
         jda.addEventListener(new SlashCom());
+        jda.addEventListener(new Travel());
     }
 }

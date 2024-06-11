@@ -34,26 +34,30 @@ public class Listeners extends ListenerAdapter {
                 ).queue();*/
         guild.upsertCommand("help","for command options").queue();
     }
+
     @Override
     public void onMessageReceived(@NotNull MessageReceivedEvent event) {
         String message = event.getMessage().getContentRaw();
         String[] messageSplit = message.split(" ");
         if(messageSplit[0].equalsIgnoreCase("weather")) {
+            String jsonCityString = Main.readConfigFile("city.json");
+            JSONObject jsonCity = new JSONObject(jsonCityString);
             if(messageSplit.length == 1) {
                 event.getChannel().sendMessage("Usage : weather [city] [function]").queue();
             } else if(messageSplit.length == 2) {
-                GetCurrentWeather(event,messageSplit[1]);
+                GetCurrentWeather(event,messageSplit[1],jsonCity);
             } else if(messageSplit.length == 3) {
                 String cityName = messageSplit[1];
                 switch(messageSplit[2]){
                     case "detail" :
-                        getDetailWeather(event,cityName);
+                        getDetailWeather(event,cityName,jsonCity);
                         break;
                     case "daily" :
-                        getDailyForecast(event,cityName);
+                        getDailyForecast(event,cityName,jsonCity);
                         break;
                     case "hourly" :
-                        getHourlyForecast(event,cityName);
+                        getHourlyForecast(event,cityName,jsonCity);
+                        break;
                     default :
                         event.getChannel().sendMessage("Usage : weather [city] [function] , Current we have functions : \n" +
                                                        "detail : getDetailWeather\n" +
@@ -65,10 +69,8 @@ public class Listeners extends ListenerAdapter {
         }
     }
 
-    public void GetCurrentWeather(@NotNull MessageReceivedEvent event ,String city){
+    public void GetCurrentWeather(@NotNull MessageReceivedEvent event ,String city ,JSONObject jsonCity){
 
-        String jsonCityString = Main.readConfigFile("city.json");
-        JSONObject jsonCity = new JSONObject(jsonCityString);
         String url = jsonCity.getString(city);
 
         String jsonIconString = Main.readConfigFile("weatherIcon.json");
@@ -88,34 +90,36 @@ public class Listeners extends ListenerAdapter {
 
                 Element temperatureElement = element.selectFirst(".CurrentConditions--tempValue--MHmYY");
                 temperature = temperatureElement.text().trim();
-
                 Element weatherElement = element.selectFirst(".CurrentConditions--phraseValue--mZC_p");
                 weather = weatherElement.text().trim();
 
                 Element currentCondition = element.selectFirst(".CurrentConditions--tempHiLoValue--3T1DG");
                 current = currentCondition.text().trim();
-
             }
+            // 找出 "Day 104° • Night 88°" 104 , 88用
+            Pattern pattern = Pattern.compile("\\d+");
+            Matcher matcher = pattern.matcher(current);
 
+            ArrayList<String> numbersList = new ArrayList<>();
+
+            while (matcher.find()) {
+                numbersList.add(matcher.group());
+            }
             // output
             EmbedBuilder embed = new EmbedBuilder();
             embed.setImage(SelectIcon(weather,jsonIcon));
-            embed.setTitle("Current Weather Information");
-            embed.setDescription("Temperature : " + FtoC(temperature.substring(0,2))+"\n"
+            embed.setTitle("Current Weather Information in "+getLocation(city ,jsonCity));
+            embed.setDescription("Temperature : " + FtoC(temperature.replaceAll("\u2022",""))+"\n"
                                  +"Weather : " + weather+"\n"
-                                 +"Current : " + "Day "+FtoC(current.substring(4,6))+ "  \u2022 Night " + FtoC(current.substring(16, 18) + "\n\n"
-//                                 +"Hourly Temp : " + hourlytemp + "\n" )
-//                                 +"Hourly Rate : " + hourlyrainrate);
-                    ));
+                                 +"Current : " + "Day "+FtoC(numbersList.get(0))+ "  \u2022 Night " + FtoC(numbersList.get(1) + "\n\n"
+                                 ));
             channel.sendMessage("").setEmbeds(embed.build()).queue();
 
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-    public void getDetailWeather(MessageReceivedEvent event ,String city){
-        String jsonCityString = Main.readConfigFile("city.json");
-        JSONObject jsonCity = new JSONObject(jsonCityString);
+    public void getDetailWeather(MessageReceivedEvent event ,String city,JSONObject jsonCity){
         String url = jsonCity.getString(city);
         MessageChannel channel = event.getChannel();
 
@@ -139,9 +143,11 @@ public class Listeners extends ListenerAdapter {
             BigDecimal WindSpeedInKph = new BigDecimal(Double.parseDouble(wind.split(" ")[0]) * 1.6).setScale(2, RoundingMode.HALF_UP);
             Humidity = detailWeather.get(2);
             UV = detailWeather.get(5);
+
+
             // output
             EmbedBuilder embed = new EmbedBuilder();
-            embed.setTitle("Current Weather Detail Information");
+            embed.setTitle("Current Weather Detail Information in "+getLocation(city ,jsonCity));
             embed.setDescription("Temperature High / Low : " + FtoC(temperature.substring(0,2))+" / "+FtoC(temperature.substring(3,5)) + "\n"
                                     +"Wind : " + WindSpeedInKph +" KM/H \n"
                                     +"Humidity : " + Humidity + " , "+HumidityLevel(Humidity) + "\n"
@@ -153,9 +159,7 @@ public class Listeners extends ListenerAdapter {
             e.printStackTrace();
         }
     }
-    public void getHourlyForecast (MessageReceivedEvent event ,String city) {
-        String jsonCityString = Main.readConfigFile("city.json");
-        JSONObject jsonCity = new JSONObject(jsonCityString);
+    public void getHourlyForecast (MessageReceivedEvent event ,String city,JSONObject jsonCity) {
         String url = jsonCity.getString(city);
         MessageChannel channel = event.getChannel();
         try {
@@ -179,7 +183,7 @@ public class Listeners extends ListenerAdapter {
 //                System.out.println(hourlyarray[i]);
 //            }
             EmbedBuilder embed = new EmbedBuilder();
-            embed.setTitle("Hourly Weather Forecast of "+ city);
+            embed.setTitle("Hourly Weather Forecast of "+getLocation(city ,jsonCity));
             StringBuilder description = new StringBuilder();
             for(String hourly : hourlyarray) {
                 description.append(extractWeatherInfo(hourly));
@@ -198,9 +202,7 @@ public class Listeners extends ListenerAdapter {
         String[] hourlyrainrate = hourlyElements.get(3).text().replaceAll("[^0-9]"," ").trim().replaceAll("\\s+"," ").split(" ");*/
 
     }
-    public void getDailyForecast(MessageReceivedEvent event ,String city){
-        String jsonCityString = Main.readConfigFile("city.json");
-        JSONObject jsonCity = new JSONObject(jsonCityString);
+    public void getDailyForecast(MessageReceivedEvent event ,String city,JSONObject jsonCity){
         String url = jsonCity.getString(city);
         MessageChannel channel = event.getChannel();
 
@@ -215,7 +217,7 @@ public class Listeners extends ListenerAdapter {
             String[] weatherInformation = sentence.split("%");
             // output
             EmbedBuilder embed = new EmbedBuilder();
-            embed.setTitle("Daily Weather Forecast of "+ city);
+            embed.setTitle("Daily Weather Forecast of "+getLocation(city ,jsonCity));
             StringBuilder description = new StringBuilder();
             for(String daily : weatherInformation) {
                 description.append(extractWeatherInfo(daily));
@@ -350,5 +352,18 @@ public class Listeners extends ListenerAdapter {
                 FtoC(temp) + "\n" +
                 "Chance of Rain " + rainChance +
                 "\n==========================";
+    }
+
+    public String getLocation(String airportCode , JSONObject jsonCity) {
+        String location = "";
+        try {
+            String url =  jsonCity.getString(airportCode);
+            Document doc = Jsoup.connect(url).get();
+            Elements elements = doc.select("h1.CurrentConditions--location--1YWj_");
+            location = elements.text();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return location;
     }
 }
