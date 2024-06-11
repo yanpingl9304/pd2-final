@@ -53,6 +53,10 @@ public class Listeners extends ListenerAdapter {
                     case "hourly" :
                         getHourlyForecast(event,cityName);
                     default :
+                        event.getChannel().sendMessage("Usage : weather [city] [function] ,Current we have  : \n" +
+                                                       "detail : getDetailWeather\n" +
+                                                       "daily : getDailyWeather\n" +
+                                                       "hourly : getHourlyWeather").queue();
                         break;
                 }
             }
@@ -133,11 +137,10 @@ public class Listeners extends ListenerAdapter {
             BigDecimal WindSpeedInKph = new BigDecimal(Double.parseDouble(wind.split(" ")[0]) * 1.6).setScale(2, RoundingMode.HALF_UP);
             Humidity = detailWeather.get(2);
             UV = detailWeather.get(5);
-
             // output
             EmbedBuilder embed = new EmbedBuilder();
             embed.setTitle("Current Weather Detail Information");
-            embed.setDescription("Temperature High / Low : " + FtoC(temperature.substring(0,2))+" / "+FtoC(temperature.substring(4,6)) + "\n"
+            embed.setDescription("Temperature High / Low : " + FtoC(temperature.substring(0,2))+" / "+FtoC(temperature.substring(3,5)) + "\n"
                                     +"Wind : " + WindSpeedInKph +" KM/H \n"
                                     +"Humidity : " + Humidity + " , "+HumidityLevel(Humidity) + "\n"
                                     +"UV : " + UV + " , "+UVLevel(UV));
@@ -166,18 +169,18 @@ public class Listeners extends ListenerAdapter {
                     .select(".Icon--icon--2aW0V.Icon--fullTheme--3Fc-5"));//weather*///
             hourlyElements.add(doc.select("div.HourlyWeatherCard--TableWrapper--1OobO")
                     .select("div.Column--precip--3JCDO"));//rain chance
-            System.out.println(doc.select("div.HourlyWeatherCard--TableWrapper--1OobO").text());
+//            System.out.println(doc.select("div.HourlyWeatherCard--TableWrapper--1OobO").text());
             String hourlyarray[] = doc.select("div.HourlyWeatherCard--TableWrapper--1OobO").text().trim().split("%");
-            System.out.println(hourlyarray.length);
+//            System.out.println(hourlyarray.length);
             //String[] hourlytime = splitTime(hourlyElements.get(0).text().trim());
-            for (int i = 0; i < hourlyarray.length; i++) {
-                System.out.println(hourlyarray[i]);
-            }
+//            for (int i = 0; i < hourlyarray.length; i++) {
+//                System.out.println(hourlyarray[i]);
+//            }
             EmbedBuilder embed = new EmbedBuilder();
             embed.setTitle("Hourly Weather Forecast of "+ city);
             StringBuilder description = new StringBuilder();
             for(String hourly : hourlyarray) {
-                description.append(extractHourlyWeatherInfo(hourly));
+                description.append(extractWeatherInfo(hourly));
                 description.append("\n\n");
             }
             embed.setDescription(description.toString());
@@ -213,7 +216,7 @@ public class Listeners extends ListenerAdapter {
             embed.setTitle("Daily Weather Forecast of "+ city);
             StringBuilder description = new StringBuilder();
             for(String daily : weatherInformation) {
-                description.append(extractDailyWeatherInfo(daily));
+                description.append(extractWeatherInfo(daily));
                 description.append("\n\n");
             }
             embed.setDescription(description.toString());
@@ -229,9 +232,13 @@ public class Listeners extends ListenerAdapter {
             String[] temperatureArray = temperature.replaceAll("\u00B0","").split("/");
             StringBuilder returnString = new StringBuilder();
             for(int i = 0; i < temperatureArray.length; i++){
-                double temperatureF = Double.parseDouble(temperatureArray[i]);
-                double temperatureC = (temperatureF - 32) / 9 * 5;
-                returnString.append(Integer.toString((int) Math.round(temperatureC)).concat("°"));
+                if(temperatureArray[i].equals("--")) {
+                    returnString.append("--");
+                } else {
+                    double temperatureF = Double.parseDouble(temperatureArray[i]);
+                    double temperatureC = (temperatureF - 32) / 9 * 5;
+                    returnString.append(Integer.toString((int) Math.round(temperatureC)).concat("°"));
+                }
                 if(i != temperatureArray.length - 1) returnString.append("/");
             }
             return returnString.toString();
@@ -309,7 +316,7 @@ public class Listeners extends ListenerAdapter {
         return level;
     }
 
-    public String extractDailyWeatherInfo(String input) {
+    public String extractWeatherInfo(String input) {
         String[] array = input.replace("Rain Chance of Rain", "").split(" ");
         String day;
         String temp;
@@ -317,45 +324,16 @@ public class Listeners extends ListenerAdapter {
         StringBuilder weatherBuilder = new StringBuilder();
         int startIndex;
 
-        if (array[0].equalsIgnoreCase("today")) {
+        if (array[0].equalsIgnoreCase("today") || array[0].equalsIgnoreCase("Now")) {
             day = array[0];
             temp = array[1];
-            startIndex = 3;
+            if(array[0].equalsIgnoreCase("today")) startIndex = 3;
+            else startIndex = 2;
         } else {
             day = array[1].trim() + " " + array[2];
             temp = array[3];
-            startIndex = 5;
-        }
-
-        while (!array[startIndex].matches("\\d+")) {
-            weatherBuilder.append(array[startIndex]).append(" ");
-            startIndex++;
-        }
-
-        String weather = weatherBuilder.toString().trim();
-
-        return day + "\n" +
-                weather + "\n" +
-                FtoC(temp) + "\n" +
-                "Chance of Rain " + rainChance +
-                "\n==========================";
-    }
-    public String extractHourlyWeatherInfo(String input) {
-        String[] array = input.replace("Rain Chance of Rain", "").split(" ");
-        String day;
-        String temp;
-        String rainChance = array[array.length - 1] + "%";
-        StringBuilder weatherBuilder = new StringBuilder();
-        int startIndex;
-
-        if (array[0].equalsIgnoreCase("Now")) {
-            day = array[0];
-            temp = array[1];
-            startIndex = 2;
-        } else {
-            day = array[1].trim() + " " + array[2];
-            temp = array[3];
-            startIndex = 4;
+            if(!array[2].equalsIgnoreCase("am") && !array[2].equalsIgnoreCase("pm")) startIndex = 5;
+            else startIndex = 4;
         }
 
         while (!array[startIndex].matches("\\d+")) {
