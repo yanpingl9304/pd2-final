@@ -45,22 +45,25 @@ public class Listeners extends ListenerAdapter {
         String message = event.getMessage().getContentRaw();
         String[] messageSplit = message.split(" ");
         if(messageSplit[0].equalsIgnoreCase("weather")) {
-            String jsonCityString = Main.readConfigFile("city.json");
-            JSONObject jsonCity = new JSONObject(jsonCityString);
             if(messageSplit.length == 1) {
                 event.getChannel().sendMessage("Usage : weather [city] [function]").queue();
             } else if(messageSplit.length == 2) {
+                JSONObject jsonCity = getJSONFile(messageSplit[0]);
                 GetCurrentWeather(event,messageSplit[1],jsonCity);
             } else if(messageSplit.length == 3) {
                 String cityName = messageSplit[1];
+                JSONObject jsonCity = new JSONObject();
                 switch(messageSplit[2]){
                     case "detail" :
+                        jsonCity = getJSONFile(messageSplit[0]);
                         getDetailWeather(event,cityName,jsonCity);
                         break;
                     case "daily" :
+                        jsonCity = getJSONFile(messageSplit[0]);
                         getDailyForecast(event,cityName,jsonCity);
                         break;
                     case "hourly" :
+                        jsonCity = getJSONFile(messageSplit[0]);
                         getHourlyForecast(event,cityName,jsonCity);
                         break;
                     default :
@@ -73,7 +76,19 @@ public class Listeners extends ListenerAdapter {
             }
         }
     }
+    public JSONObject getJSONFile(String input) {
+        JSONObject jsonCity = new JSONObject();
+        if(input.equalsIgnoreCase("weather")) {
+            String jsonCityString = Main.readConfigFile("city.json");
+            jsonCity = new JSONObject(jsonCityString);
 
+        } else if (input.equalsIgnoreCase("travel")) {
+            String jsonTravelCityString = Main.readConfigFile("Travelcity.json");
+            jsonCity = new JSONObject(jsonTravelCityString);
+
+        }
+        return jsonCity;
+    }
     public void GetCurrentWeather(@NotNull MessageReceivedEvent event ,String city ,JSONObject jsonCity){
 
         String url = jsonCity.getString(city);
