@@ -176,17 +176,9 @@ public class Listeners extends ListenerAdapter {
                     .select(".Column--temp--1sO_J.Column--verticalStack--28b4K"));//temperature
             hourlyElements.add(doc.select("div.HourlyWeatherCard--TableWrapper--1OobO")
                     .select(".Column--weatherIcon--2w_Rf.Icon--icon--2aW0V.Icon--fullTheme--3Fc-5"));//condition
-            /*hourlyElements.add(doc.select("div.HourlyWeatherCard--TableWrapper--1OobO")
-                    .select(".Icon--icon--2aW0V.Icon--fullTheme--3Fc-5"));//weather*///
             hourlyElements.add(doc.select("div.HourlyWeatherCard--TableWrapper--1OobO")
                     .select("div.Column--precip--3JCDO"));//rain chance
-//            System.out.println(doc.select("div.HourlyWeatherCard--TableWrapper--1OobO").text());
             String hourlyarray[] = doc.select("div.HourlyWeatherCard--TableWrapper--1OobO").text().trim().split("%");
-//            System.out.println(hourlyarray.length);
-            //String[] hourlytime = splitTime(hourlyElements.get(0).text().trim());
-//            for (int i = 0; i < hourlyarray.length; i++) {
-//                System.out.println(hourlyarray[i]);
-//            }
             EmbedBuilder embed = new EmbedBuilder();
             embed.setTitle("Hourly Weather Forecast of "+getLocation(city ,jsonCity));
             StringBuilder description = new StringBuilder();
@@ -199,13 +191,6 @@ public class Listeners extends ListenerAdapter {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        /*for (String eachcondition : hourlyconditionarray) {
-            System.out.println(eachcondition);
-            eachcondition.replace("_"," ");
-        }
-        String[] hourlyrainrate = hourlyElements.get(3).text().replaceAll("[^0-9]"," ").trim().replaceAll("\\s+"," ").split(" ");*/
-
     }
     public void getDailyForecast(MessageReceivedEvent event ,String city,JSONObject jsonCity){
         String url = jsonCity.getString(city);
