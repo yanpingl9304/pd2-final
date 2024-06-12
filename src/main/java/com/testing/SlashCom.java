@@ -81,16 +81,5 @@ public class SlashCom extends ListenerAdapter {
             }
             event.reply("City " + cityName + " added");
         }
-        /*if (event.getName().equals("rainrate")) {
-            OptionMapping cityName = event.getOption("cityname");
-            String city = cityName.getAsString();
-            OptionMapping hourly = event.getOption("hourly");
-            if (hourly != null); {
-
-            }
-            //event.reply("hello").queue();
-        }*/
-
-
     }
 }
