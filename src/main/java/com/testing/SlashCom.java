@@ -17,10 +17,10 @@ public class SlashCom extends ListenerAdapter {
                     + "hourly : gets hourly weather forecase\n").queue();
         }
         if (event.getName().equals("addcity")) {
-            String linklocation = "C:\\Users\\user\\IdeaProjects\\pd2-final\\src\\main\\resources\\city.json";
+            String linklocation = "C:\\Users\\yanpi\\Desktop\\DiscordBot\\src\\main\\resources\\city.json";
             OptionMapping city = event.getOption("city");
             OptionMapping link = event.getOption("link");
-            String cityCopy = ("C:\\Users\\user\\IdeaProjects\\pd2-final\\src\\main\\resources\\tempCity.json");
+            String cityCopy = ("C:\\Users\\yanpi\\Desktop\\DiscordBot\\src\\main\\resources\\tempCity.json");
             String linkText = link.getAsString();
             String cityName = city.getAsString();
             if (!linkText.contains("https://weather.com/")){
