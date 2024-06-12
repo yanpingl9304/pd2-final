@@ -28,9 +28,9 @@ public class SlashCom extends ListenerAdapter {
                 return;
             }
             for (char letter : cityName.toCharArray()) {
-                boolean validName = false;
+                boolean validName = true;
                 if (Character.isLetter(letter)) {
-                    validName = true;
+                    validName = false;
                 }
                 if (validName) {
                     System.out.println("city name is invalid");
@@ -74,6 +74,12 @@ public class SlashCom extends ListenerAdapter {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(cityCopy))) {
+                bw.write(sb.toString());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            event.reply("City " + cityName + " added");
         }
         /*if (event.getName().equals("rainrate")) {
             OptionMapping cityName = event.getOption("cityname");
