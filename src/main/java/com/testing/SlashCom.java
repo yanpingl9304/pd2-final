@@ -17,7 +17,7 @@ public class SlashCom extends ListenerAdapter {
                     + "hourly : gets hourly weather forecase\n").queue();
         }
         if (event.getName().equals("addcity")) {
-            String linklocation = "C:\\Users\\user\\IdeaProjects\\pd2-final\\src\\main\\resources\\city.json";
+            String linklocation = "C:\\Users\\user\\IdeaProjects\\pd2-final\\src\\main\\resources\\tempCity.json";
             OptionMapping city = event.getOption("city");
             OptionMapping link = event.getOption("link");
             String linkText = link.getAsString();
@@ -36,9 +36,38 @@ public class SlashCom extends ListenerAdapter {
                     return;
                 }
             }
-            /*try (BufferedReader br = new BufferedReader(new FileReader(linklocation))) { //handle later
-
-            }*/
+            int linecount = 0, tempLineCount = 0;
+            String secondtoLastLine = "";
+            try (BufferedReader br = new BufferedReader(new FileReader(linklocation))) { //handle later
+                String line;
+                while ((line = br.readLine()) != null) {
+                    linecount++;
+                }
+                br.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try (BufferedReader br = new BufferedReader(new FileReader(linklocation))) { //handle later
+                String line;
+                while ((line = br.readLine()) != null) {
+                    tempLineCount++;
+                    if (tempLineCount == linecount - 1) {
+                        secondtoLastLine = line;
+                    }
+                }
+                br.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            StringBuilder sb = new StringBuilder();
+            sb.append(secondtoLastLine)
+                    .append(",\n")
+                    .append("  " + "\"" + cityName + "\"" + ": " + "\"" + linkText + "\"" + "\n" + "}");
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(linklocation,true))) {
+                bw.write(sb.toString());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         /*if (event.getName().equals("rainrate")) {
             OptionMapping cityName = event.getOption("cityname");
