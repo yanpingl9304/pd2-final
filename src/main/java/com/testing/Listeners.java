@@ -226,7 +226,7 @@ public class Listeners extends ListenerAdapter {
             StringBuilder description = new StringBuilder();
             for(String daily : weatherInformation) {
                 description.append(extractWeatherInfo(daily));
-                description.append("\n\n");
+                description.append("\n");
             }
             embed.setDescription(description.toString());
             channel.sendMessage("").setEmbeds(embed.build()).queue();
@@ -352,7 +352,7 @@ public class Listeners extends ListenerAdapter {
 
         String weather = weatherBuilder.toString().trim();
 
-        return day + "\n" +
+        return  day + "\n" +
                 weather + "\n" +
                 FtoC(temp) + "\n" +
                 "Chance of Rain " + rainChance +

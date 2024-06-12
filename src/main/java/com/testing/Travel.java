@@ -18,15 +18,30 @@ public class Travel extends Listeners {
     public void onMessageReceived(@NotNull MessageReceivedEvent event) {
         String message = event.getMessage().getContentRaw();
         String[] messageSplit = message.split(" ");
-        if(messageSplit[0].equalsIgnoreCase("travel")) {
-            event.getChannel().sendMessage("Where would you like to travel?\nLet me tell you the weather over there ,please enter airport code").queue();
-            String jsonCityString = Main.readConfigFile("Travelcity.json");
-            JSONObject jsonCity = new JSONObject(jsonCityString);
+
+        String jsonCityString = Main.readConfigFile("Travelcity.json");
+        JSONObject jsonCity = new JSONObject(jsonCityString);
+
+        if(messageSplit[0].equalsIgnoreCase("travel") && messageSplit.length == 1) {
+            event.getChannel().sendMessage("Where would you like to travel?\n" +
+                    "Let me tell you the weather over there ,please enter airport code\n" +
+                    "travel [Airport Code]").queue();
+        } else if (messageSplit[0].equalsIgnoreCase("travel") && messageSplit.length == 2) {
+
             messageSplit[1] = messageSplit[1].toUpperCase();
             EmbedBuilder embed = getFlagsAndTime(messageSplit[1],jsonCity);
             event.getChannel().sendMessage("").setEmbeds(embed.build()).queue();
             GetCurrentWeather(event, messageSplit[1],jsonCity);
+        } else if (messageSplit[0].equalsIgnoreCase("travel") && messageSplit.length == 3) {
+            switch (messageSplit[2]) {
+                case "daily" :
+                    getDailyForecast(event, messageSplit[1],jsonCity);
+                    break;
+                default:
+                    break;
+            }
         }
+
     }
     public EmbedBuilder getFlagsAndTime(String airportCode , JSONObject jsonCity) {
         EmbedBuilder embed = new EmbedBuilder();
