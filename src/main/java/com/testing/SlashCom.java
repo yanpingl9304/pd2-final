@@ -24,7 +24,7 @@ public class SlashCom extends ListenerAdapter {
             String linkText = link.getAsString();
             String cityName = city.getAsString();
             if (!linkText.contains("https://weather.com/")){
-                System.out.println("the link is not from weather.com");
+                event.reply("the link is not from weather.com");
                 return;
             }
             for (char letter : cityName.toCharArray()) {
@@ -33,7 +33,7 @@ public class SlashCom extends ListenerAdapter {
                     validName = false;
                 }
                 if (validName) {
-                    System.out.println("city name is invalid");
+                    event.reply("city name is invalid");
                     return;
                 }
             }
