@@ -17,9 +17,10 @@ public class SlashCom extends ListenerAdapter {
                     + "hourly : gets hourly weather forecase\n").queue();
         }
         if (event.getName().equals("addcity")) {
-            String linklocation = "C:\\Users\\user\\IdeaProjects\\pd2-final\\src\\main\\resources\\tempCity.json";
+            String linklocation = "C:\\Users\\user\\IdeaProjects\\pd2-final\\src\\main\\resources\\city.json";
             OptionMapping city = event.getOption("city");
             OptionMapping link = event.getOption("link");
+            String cityCopy = ("C:\\Users\\user\\IdeaProjects\\pd2-final\\src\\main\\resources\\tempCity.json");
             String linkText = link.getAsString();
             String cityName = city.getAsString();
             if (!linkText.contains("https://weather.com/")){
@@ -27,18 +28,19 @@ public class SlashCom extends ListenerAdapter {
                 return;
             }
             for (char letter : cityName.toCharArray()) {
-                boolean isletter = false;
-                if ((letter > 'a' && letter <= 'z') || (letter > 'A' && letter <= 'Z')) {
-                    isletter = true;
+                boolean validName = false;
+                if (Character.isLetter(letter)) {
+                    validName = true;
                 }
-                if (!isletter) {
+                if (validName) {
                     System.out.println("city name is invalid");
                     return;
                 }
             }
             int linecount = 0, tempLineCount = 0;
             String secondtoLastLine = "";
-            try (BufferedReader br = new BufferedReader(new FileReader(linklocation))) { //handle later
+            StringBuilder tempCity = new StringBuilder();
+            try (BufferedReader br = new BufferedReader(new FileReader(cityCopy))) { //handle later
                 String line;
                 while ((line = br.readLine()) != null) {
                     linecount++;
@@ -47,12 +49,15 @@ public class SlashCom extends ListenerAdapter {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            try (BufferedReader br = new BufferedReader(new FileReader(linklocation))) { //handle later
+            try (BufferedReader br = new BufferedReader(new FileReader(cityCopy))) { //handle later
                 String line;
                 while ((line = br.readLine()) != null) {
                     tempLineCount++;
-                    if (tempLineCount == linecount - 1) {
+                    if (tempLineCount >= linecount - 1) {
                         secondtoLastLine = line;
+                        break;
+                    } else {
+                        tempCity.append(line + "\n");
                     }
                 }
                 br.close();
@@ -60,10 +65,11 @@ public class SlashCom extends ListenerAdapter {
                 e.printStackTrace();
             }
             StringBuilder sb = new StringBuilder();
-            sb.append(secondtoLastLine)
+            sb.append(tempCity)
+                    .append(secondtoLastLine)
                     .append(",\n")
                     .append("  " + "\"" + cityName + "\"" + ": " + "\"" + linkText + "\"" + "\n" + "}");
-            try (BufferedWriter bw = new BufferedWriter(new FileWriter(linklocation,true))) {
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(linklocation))) {
                 bw.write(sb.toString());
             } catch (IOException e) {
                 e.printStackTrace();

@@ -345,7 +345,7 @@ public class Listeners extends ListenerAdapter {
             else startIndex = 4;
         }
 
-        while (!array[startIndex].matches("\\d+")) {
+        while ((startIndex < array.length) && !array[startIndex].matches("\\d+")) {
             weatherBuilder.append(array[startIndex]).append(" ");
             startIndex++;
         }
