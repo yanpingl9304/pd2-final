@@ -23,17 +23,29 @@ public class Travel extends Listeners {
             String jsonCityString = Main.readConfigFile("Travelcity.json");
             JSONObject jsonCity = new JSONObject(jsonCityString);
             messageSplit[1] = messageSplit[1].toUpperCase();
-            EmbedBuilder embed = new EmbedBuilder();
-            embed.setImage(getFlags(messageSplit[1]));
+            EmbedBuilder embed = getFlagsAndTime(messageSplit[1],jsonCity);
             event.getChannel().sendMessage("").setEmbeds(embed.build()).queue();
             GetCurrentWeather(event, messageSplit[1],jsonCity);
         }
     }
-    public String getFlags(String country) {
-        String flagUrl = "";
-        String jsonFlagsString = Main.readConfigFile("Flags.json");
-        JSONObject jsonFlags = new JSONObject(jsonFlagsString);
-        flagUrl = jsonFlags.getString(country);
-        return flagUrl;
+    public EmbedBuilder getFlagsAndTime(String airportCode , JSONObject jsonCity) {
+        EmbedBuilder embed = new EmbedBuilder();
+        try {
+            String url =  jsonCity.getString(airportCode);
+            Document doc = Jsoup.connect(url).get();
+            Elements elements = doc.select("span.CurrentConditions--timestamp--1ybTk");
+            String time = elements.text().replace("As of ","");
+
+            String flagUrl = "";
+            String jsonFlagsString = Main.readConfigFile("Flags.json");
+            JSONObject jsonFlags = new JSONObject(jsonFlagsString);
+            flagUrl = jsonFlags.getString(airportCode);
+
+            embed.setTitle("Local time "+time);
+            embed.setImage(flagUrl);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return embed;
     }
 }
