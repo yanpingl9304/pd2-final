@@ -47,33 +47,44 @@ public class Listeners extends ListenerAdapter {
     public void onMessageReceived(@NotNull MessageReceivedEvent event) {
         String message = event.getMessage().getContentRaw();
         String[] messageSplit = message.split(" ");
+
         if(messageSplit[0].equalsIgnoreCase("weather")) {
             if(messageSplit.length == 1) {
                 event.getChannel().sendMessage("Usage : weather [city] [function]").queue();
             } else if(messageSplit.length == 2) {
-                JSONObject jsonCity = getJSONFile(messageSplit[0]);
-                GetCurrentWeather(event,messageSplit[1],jsonCity);
-            } else if(messageSplit.length == 3) {
+//                JSONObject jsonCity = getJSONFile(messageSplit[0]);
+//                GetCurrentWeather(event,messageSplit[1],jsonCity);
+                } else if(messageSplit.length == 3) {
                 String cityName = messageSplit[1];
-                JSONObject jsonCity = new JSONObject();
-                switch(messageSplit[2]){
-                    case "detail" :
-                        jsonCity = getJSONFile(messageSplit[0]);
-                        getDetailWeather(event,cityName,jsonCity);
+                JSONObject jsonCity = getJSONFile(messageSplit[0]);
+
+                switch (messageSplit[2]) {
+                    case "detail":
+                        if (jsonCity.has(cityName)) {
+                            getDetailWeather(event, cityName, jsonCity);
+                        } else {
+                            event.getChannel().sendMessage("City " + cityName + " not found in the JSON data.").queue();
+                        }
                         break;
-                    case "daily" :
-                        jsonCity = getJSONFile(messageSplit[0]);
-                        getDailyForecast(event,cityName,jsonCity);
+                    case "daily":
+                        if (jsonCity.has(cityName)) {
+                            getDailyForecast(event, cityName, jsonCity);
+                        } else {
+                            event.getChannel().sendMessage("City " + cityName + " not found in the JSON data.").queue();
+                        }
                         break;
-                    case "hourly" :
-                        jsonCity = getJSONFile(messageSplit[0]);
-                        getHourlyForecast(event,cityName,jsonCity);
+                    case "hourly":
+                        if (jsonCity.has(cityName)) {
+                            getHourlyForecast(event, cityName, jsonCity);
+                        } else {
+                            event.getChannel().sendMessage("City " + cityName + " not found in the JSON data.").queue();
+                        }
                         break;
-                    default :
-                        event.getChannel().sendMessage("Usage : weather [city] [function] , Current we have functions : \n" +
-                                                       "detail : getDetailWeather\n" +
-                                                       "daily : getDailyWeather\n" +
-                                                       "hourly : getHourlyWeather").queue();
+                    default:
+                        event.getChannel().sendMessage("Usage: weather [city] [function], Current we have functions:\n" +
+                                "detail: getDetailWeather\n" +
+                                "daily: getDailyWeather\n" +
+                                "hourly: getHourlyWeather").queue();
                         break;
                 }
             }
@@ -92,6 +103,7 @@ public class Listeners extends ListenerAdapter {
         }
         return jsonCity;
     }
+
     public void GetCurrentWeather(@NotNull MessageReceivedEvent event ,String city ,JSONObject jsonCity){
 
         String url = jsonCity.getString(city);
