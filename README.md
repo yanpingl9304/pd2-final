@@ -21,10 +21,13 @@ How to use :<br/> default usage, <br/>
 =====
 Because we store locations url in json file,<br/>
 so currently,<br/>
-[location] : can using counties in Taiwan.<br/>
-[airport code] : airports that Taiwanese travel with the most.<br/>
-[options] : null : get current weather in given location.<br/>
-            detail : get detail weather in given location.<br/>
-            hourly : get hourly weather in given location.<br/>
-            daily : get daily weather in given location.<br/>
+[location] : <br/>
+can using counties in Taiwan.<br/>
+[airport code] : <br/>
+airports that Taiwanese travel with the most.<br/>
+[options] : <br/> 
+null : get current weather in given location.<br/>
+detail : get detail weather in given location.<br/>
+hourly : get hourly weather in given location.<br/>
+daily : get daily weather in given location.<br/>
 =====
