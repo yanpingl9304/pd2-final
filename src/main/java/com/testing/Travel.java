@@ -19,8 +19,6 @@ public class Travel extends Listeners {
         String message = event.getMessage().getContentRaw();
         String[] messageSplit = message.split(" ");
 
-
-
         if(messageSplit[0].equalsIgnoreCase("travel") && messageSplit.length == 1) {
             event.getChannel().sendMessage("Where would you like to travel?\n" +
                     "Let me tell you the weather over there ,please enter airport code\n" +
@@ -33,9 +31,17 @@ public class Travel extends Listeners {
             GetCurrentWeather(event, messageSplit[1],jsonCity);
         } else if (messageSplit[0].equalsIgnoreCase("travel") && messageSplit.length == 3) {
             JSONObject jsonCity = getJSONFile(messageSplit[0]);
+            EmbedBuilder embed = getFlagsAndTime(messageSplit[1],jsonCity);
+            event.getChannel().sendMessage("").setEmbeds(embed.build()).queue();
             switch (messageSplit[2]) {
                 case "daily" :
                     getDailyForecast(event, messageSplit[1],jsonCity);
+                    break;
+                case "detail" :
+                    getDetailWeather(event, messageSplit[1],jsonCity);
+                    break;
+                case "hourly" :
+                    getHourlyForecast(event, messageSplit[1],jsonCity);
                     break;
                 default:
                     break;
@@ -54,7 +60,11 @@ public class Travel extends Listeners {
             String flagUrl = "";
             String jsonFlagsString = Main.readConfigFile("Flags.json");
             JSONObject jsonFlags = new JSONObject(jsonFlagsString);
-            flagUrl = jsonFlags.getString(airportCode);
+            if(jsonFlags.has(airportCode)) {
+                flagUrl = jsonFlags.getString(airportCode);
+            } else {
+                flagUrl = null;
+            }
 
             embed.setTitle("Local time "+time);
             embed.setImage(flagUrl);
