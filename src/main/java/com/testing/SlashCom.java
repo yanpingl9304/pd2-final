@@ -17,14 +17,14 @@ public class SlashCom extends ListenerAdapter {
                     + "hourly : gets hourly weather forecase\n").queue();
         }
         if (event.getName().equals("addcity")) {
-            String linklocation = "C:\\Users\\yanpi\\Desktop\\DiscordBot\\src\\main\\resources\\city.json";
+            String fileLocation = "C:\\Users\\user\\IdeaProjects\\pd2-final\\src\\main\\resources\\city.json";//change if needed
             OptionMapping city = event.getOption("city");
             OptionMapping link = event.getOption("link");
-            String cityCopy = ("C:\\Users\\yanpi\\Desktop\\DiscordBot\\src\\main\\resources\\tempCity.json");
+            String cityCopy = ("C:\\Users\\user\\IdeaProjects\\pd2-final\\src\\main\\resources\\tempCity.json");//change if needed
             String linkText = link.getAsString();
             String cityName = city.getAsString();
             if (!linkText.contains("https://weather.com/")){
-                event.reply("the link is not from weather.com");
+                event.reply("The link is not from weather.com!").queue();
                 return;
             }
             for (char letter : cityName.toCharArray()) {
@@ -33,64 +33,87 @@ public class SlashCom extends ListenerAdapter {
                     validName = false;
                 }
                 if (validName) {
-                    event.reply("city name is invalid");
+                    event.reply("The city name is invalid!").queue();
                     return;
                 }
             }
-            int linecount = 0, tempLineCount = 0;
-            String secondtoLastLine = "";
             StringBuilder tempCity = new StringBuilder();
-            try (BufferedReader br = new BufferedReader(new FileReader(cityCopy))) { //handle later
-                String line;
-                while ((line = br.readLine()) != null) {
-                    linecount++;
-                }
-                br.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            try (BufferedReader br = new BufferedReader(new FileReader(cityCopy))) { //handle later
-                String line;
-                while ((line = br.readLine()) != null) {
-                    tempLineCount++;
-                    if (tempLineCount >= linecount - 1) {
-                        secondtoLastLine = line;
-                        break;
-                    } else {
-                        tempCity.append(line + "\n");
-                    }
-                }
-                br.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            StringBuilder sb = new StringBuilder();
-            sb.append(tempCity)
-                    .append(secondtoLastLine)
-                    .append(",\n")
-                    .append("  " + "\"" + cityName + "\"" + ": " + "\"" + linkText + "\"" + "\n" + "}");
-            try (BufferedWriter bw = new BufferedWriter(new FileWriter(linklocation))) {
-                bw.write(sb.toString());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            try (BufferedWriter bw = new BufferedWriter(new FileWriter(cityCopy))) {
-                bw.write(sb.toString());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            event.reply("City " + cityName + " added");
+            addRegion(tempCity,cityCopy,cityName,linkText,fileLocation);
+            event.reply("City " + cityName + " added").queue();
         }
-        /*if (event.getName().equals("rainrate")) {
-            OptionMapping cityName = event.getOption("cityname");
-            String city = cityName.getAsString();
-            OptionMapping hourly = event.getOption("hourly");
-            if (hourly != null); {
-
+        if (event.getName().equals("addtraveldest")) {
+            String fileLocation = "C:\\Users\\user\\IdeaProjects\\pd2-final\\src\\main\\resources\\TravelCity.json";
+            OptionMapping airport = event.getOption("airport");
+            OptionMapping link = event.getOption("link");
+            String airportCopy = "C:\\Users\\user\\IdeaProjects\\pd2-final\\src\\main\\resources\\tempTravelCity.json";
+            String linkText = link.getAsString();
+            String airportName = airport.getAsString();
+            if (!linkText.contains("https://weather.com/")){
+                event.reply("The link is not from weather.com!").queue();
+                return;
             }
-            //event.reply("hello").queue();
-        }*/
+            for (char letter : airportName.toCharArray()) {
+                boolean validName = true;
+                if (Character.isLetter(letter)) {
+                    validName = false;
+                }
+                if (validName) {
+                    event.reply("The airport name is invalid!").queue();
+                    return;
+                }
+            }
+            StringBuilder tempAirport = new StringBuilder();
+            addRegion(tempAirport,airportCopy,airportName,linkText,fileLocation);
+            event.reply("Airport " + airportName + " added").queue();
+        }
 
-
+    }
+    //adds region with the provided link and region name
+    public void addRegion (StringBuilder tempRegion,
+                                  String regionCopy,
+                                  String regionName,
+                                  String regionLink,
+                                  String regionFileLocation) {
+        int linecount = 0, tempLineCount = 0;
+        String secondtoLastLine = "";
+        try (BufferedReader br = new BufferedReader(new FileReader(regionCopy))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                linecount++;
+            }
+            br.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try (BufferedReader br = new BufferedReader(new FileReader(regionCopy))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                tempLineCount++;
+                if (tempLineCount >= linecount - 1) {
+                    secondtoLastLine = line;
+                    break;
+                } else {
+                    tempRegion.append(line + "\n");
+                }
+            }
+            br.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        StringBuilder regionAdder = new StringBuilder();
+        regionAdder.append(tempRegion)
+                .append(secondtoLastLine)
+                .append(",\n")
+                .append("  " + "\"" + regionName + "\"" + ": " + "\"" + regionLink + "\"" + "\n" + "}");
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(regionFileLocation))) {
+            bw.write(regionAdder.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(regionCopy))) {
+            bw.write(regionAdder.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

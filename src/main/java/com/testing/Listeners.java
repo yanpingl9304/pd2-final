@@ -37,7 +37,10 @@ public class Listeners extends ListenerAdapter {
                 .addOptions(new OptionData(OptionType.STRING,"city","the city name",true),
                 new OptionData(OptionType.STRING,"link","the link of the city(must be a weather.com link)",true))
                 .queue();
-
+        guild.upsertCommand("addtraveldest","adding the travel destination to the list")
+                .addOptions(new OptionData(OptionType.STRING,"airport","The Airport Name",true),
+                new OptionData(OptionType.STRING,"link","The link of the Airport(must be a weather.com link)",true))
+                .queue();
     }
 
     @Override
