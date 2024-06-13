@@ -70,6 +70,7 @@ public class SlashCom extends ListenerAdapter {
     }
 
     //adds region with the provided link and region name
+    //tempRegion is for copying the original file until the second to last line
     public void addRegion (StringBuilder tempRegion,
                                   String regionCopy,
                                   String regionName,
