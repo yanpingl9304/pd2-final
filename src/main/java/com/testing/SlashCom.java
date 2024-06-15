@@ -39,13 +39,14 @@ public class SlashCom extends ListenerAdapter {
             }
             StringBuilder tempCity = new StringBuilder();
             addRegion(tempCity,cityCopy,cityName,linkText,fileLocation);
-            event.reply("City " + cityName + " added").queue();
+            event.reply("City " + cityName + " added\n" +
+                        "please restart the bot after you add a new city").queue();
         }
         if (event.getName().equals("addtraveldest")) {
-            String fileLocation = "C:\\Users\\user\\IdeaProjects\\pd2-final\\src\\main\\resources\\TravelCity.json";
+            String fileLocation = "C:\\Users\\yanpi\\Desktop\\DiscordBot\\src\\main\\resources\\TravelCity.json";
             OptionMapping airport = event.getOption("airport");
             OptionMapping link = event.getOption("link");
-            String airportCopy = "C:\\Users\\user\\IdeaProjects\\pd2-final\\src\\main\\resources\\tempTravelCity.json";
+            String airportCopy = "C:\\Users\\yanpi\\Desktop\\DiscordBot\\src\\main\\resources\\tempTravelCity.json";
             String linkText = link.getAsString();
             String airportName = airport.getAsString();
             if (!linkText.contains("https://weather.com/")){
@@ -64,7 +65,8 @@ public class SlashCom extends ListenerAdapter {
             }
             StringBuilder tempAirport = new StringBuilder();
             addRegion(tempAirport,airportCopy,airportName,linkText,fileLocation);
-            event.reply("Airport " + airportName + " added").queue();
+            event.reply("Airport " + airportName + " added\n" +
+                        "Please restart the bot after you add a new airport").queue();
         }
 
     }

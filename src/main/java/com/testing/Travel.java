@@ -47,8 +47,8 @@ public class Travel extends Listeners {
                     break;
             }
         }
-
     }
+
     public EmbedBuilder getFlagsAndTime(String airportCode , JSONObject jsonCity) {
         EmbedBuilder embed = new EmbedBuilder();
         try {
