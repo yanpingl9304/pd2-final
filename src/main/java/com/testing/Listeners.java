@@ -82,20 +82,20 @@ public class Listeners extends ListenerAdapter {
                         break;
                     default:
                         event.getChannel().sendMessage("Usage: weather [city] [function], Current we have functions:\n" +
-                                "detail: getDetailWeather\n" +
-                                "daily: getDailyWeather\n" +
-                                "hourly: getHourlyWeather").queue();
+                                                       "detail: getDetailWeather\n" +
+                                                       "daily: getDailyWeather\n" +
+                                                       "hourly: getHourlyWeather").queue();
                         break;
                 }
             }
         }
     }
+    // get json file
     public JSONObject getJSONFile(String input) {
         JSONObject jsonCity = new JSONObject();
         if(input.equalsIgnoreCase("weather")) {
             String jsonCityString = Main.readConfigFile("city.json");
             jsonCity = new JSONObject(jsonCityString);
-
         } else if (input.equalsIgnoreCase("travel")) {
             String jsonTravelCityString = Main.readConfigFile("Travelcity.json");
             jsonCity = new JSONObject(jsonTravelCityString);
@@ -103,7 +103,7 @@ public class Listeners extends ListenerAdapter {
         }
         return jsonCity;
     }
-
+    // get current weather information including current temperature ,day temperature ,night temperature and weather condition
     public void GetCurrentWeather(@NotNull MessageReceivedEvent event ,String city ,JSONObject jsonCity){
 
         String url = jsonCity.getString(city);
@@ -154,13 +154,14 @@ public class Listeners extends ListenerAdapter {
             e.printStackTrace();
         }
     }
+    // get detail weather information including  high/low temperature ,wind speed ,humidity ,and UV ,classify humidity and UV
     public void getDetailWeather(MessageReceivedEvent event ,String city,JSONObject jsonCity){
         String url = jsonCity.getString(city);
         MessageChannel channel = event.getChannel();
 
         String temperature = "";     //0
         String wind = "";            //1
-        String Humidity = "";        //2
+        String humidity = "";        //2
         String UV = "";              //5
 
         try {
@@ -175,17 +176,16 @@ public class Listeners extends ListenerAdapter {
             }
             temperature = detailWeather.get(0);
             wind = detailWeather.get(1).replace("Wind Direction", "");
-            BigDecimal WindSpeedInKph = new BigDecimal(Double.parseDouble(wind.split(" ")[0]) * 1.6).setScale(2, RoundingMode.HALF_UP);
-            Humidity = detailWeather.get(2);
+            BigDecimal WindSpeedInKph = new BigDecimal(Double.parseDouble(wind.split(" ")[0]) * 1.6).setScale(2, RoundingMode.HALF_UP); //小數點第二位
+            humidity = detailWeather.get(2);
             UV = detailWeather.get(5);
-
 
             // output
             EmbedBuilder embed = new EmbedBuilder();
             embed.setTitle("Current Weather Detail Information in "+getLocation(city ,jsonCity));
             embed.setDescription("Temperature High / Low : " + FtoC(temperature.substring(0,2))+" / "+FtoC(temperature.substring(3,5)) + "\n"
                                     +"Wind : " + WindSpeedInKph +" KM/H \n"
-                                    +"Humidity : " + Humidity + " , "+HumidityLevel(Humidity) + "\n"
+                                    +"Humidity : " + humidity + " , "+HumidityLevel(humidity) + "\n"
                                     +"UV : " + UV + " , "+UVLevel(UV));
 
             channel.sendMessage("").setEmbeds(embed.build()).queue();
@@ -199,16 +199,9 @@ public class Listeners extends ListenerAdapter {
         MessageChannel channel = event.getChannel();
         try {
             Document doc = Jsoup.connect(url).get();
-            List<Elements> hourlyElements = new ArrayList<>();
-            hourlyElements.add(doc.select("div.HourlyWeatherCard--TableWrapper--1OobO")
-                    .select(".Ellipsis--ellipsis--3ADai"));//time
-            hourlyElements.add(doc.select("div.HourlyWeatherCard--TableWrapper--1OobO")
-                    .select(".Column--temp--1sO_J.Column--verticalStack--28b4K"));//temperature
-            hourlyElements.add(doc.select("div.HourlyWeatherCard--TableWrapper--1OobO")
-                    .select(".Column--weatherIcon--2w_Rf.Icon--icon--2aW0V.Icon--fullTheme--3Fc-5"));//condition
-            hourlyElements.add(doc.select("div.HourlyWeatherCard--TableWrapper--1OobO")
-                    .select("div.Column--precip--3JCDO"));//rain chance
+
             String hourlyarray[] = doc.select("div.HourlyWeatherCard--TableWrapper--1OobO").text().trim().split("%");
+
             EmbedBuilder embed = new EmbedBuilder();
             embed.setTitle("Hourly Weather Forecast of "+getLocation(city ,jsonCity));
             StringBuilder description = new StringBuilder();
@@ -250,7 +243,7 @@ public class Listeners extends ListenerAdapter {
             e.printStackTrace();
         }
     }
-
+    // convert Fahrenheit to Celsius
     public String FtoC(String temperature) {
         if(temperature.contains("/")) {
             String[] temperatureArray = temperature.replaceAll("\u00B0","").split("/");
@@ -275,7 +268,7 @@ public class Listeners extends ListenerAdapter {
         return Integer.toString((int) Math.round(temperatureC)).concat("\u00B0");
 
     }
-
+    // select weather icon
     public String SelectIcon(String weather , JSONObject jsonIcon) {
         String iconUrl = "";
         if (weather.contains("Sunny")) {
@@ -289,24 +282,7 @@ public class Listeners extends ListenerAdapter {
         }
         return iconUrl;
     }
-
-    public static String[] splitTime(String input) {
-        String regex = "Now|\\d+\\s(am|pm)";
-        Pattern pattern = Pattern.compile(regex);
-        Matcher matcher = pattern.matcher(input);
-
-        ArrayList<String> resultList = new ArrayList<>();
-
-        while (matcher.find()) {
-            String target = matcher.group();
-            if(matcher.group().length() != 5) {
-                for(int i = matcher.group().length(); i < 5 ; i++)  target = target.concat(" ");
-            }
-            resultList.add(target);
-        }
-
-        return resultList.toArray(new String[0]);
-    }
+    // classify the humidity level
     public String HumidityLevel(String Humidity){
         int humidityInt = Integer.parseInt(Humidity.replace("%",""));
         String level = "";
@@ -321,7 +297,7 @@ public class Listeners extends ListenerAdapter {
         }
         return level;
     }
-
+    // classify the UV level
     public String UVLevel(String UV){
         String[] temp = UV.split(" ");
         int UVLevel = Integer.parseInt(temp[0]);
@@ -339,7 +315,7 @@ public class Listeners extends ListenerAdapter {
         }
         return level;
     }
-
+    // format the weather information from weather.com
     public String extractWeatherInfo(String input) {
         String[] array = input.replace("Rain Chance of Rain", "").split(" ");
         String day;
@@ -373,7 +349,7 @@ public class Listeners extends ListenerAdapter {
                 "Chance of Rain " + rainChance +
                 "\n==========================";
     }
-
+    // get the city location from weather.com
     public String getLocation(String airportCode , JSONObject jsonCity) {
         String location = "";
         try {

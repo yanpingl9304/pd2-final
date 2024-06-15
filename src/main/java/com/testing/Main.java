@@ -8,11 +8,6 @@ import org.json.JSONObject;
 import javax.security.auth.login.LoginException;
 import java.nio.charset.StandardCharsets;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.*;
-import org.jsoup.select.*;
-
-import java.io.IOException;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;

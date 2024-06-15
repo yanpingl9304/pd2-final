@@ -21,8 +21,8 @@ public class Travel extends Listeners {
 
         if(messageSplit[0].equalsIgnoreCase("travel") && messageSplit.length == 1) {
             event.getChannel().sendMessage("Where would you like to travel?\n" +
-                    "Let me tell you the weather over there ,please enter airport code\n" +
-                    "travel [Airport Code]").queue();
+                                           "Let me tell you the weather over there ,please enter airport code\n" +
+                                           "travel [Airport Code]").queue();
         } else if (messageSplit[0].equalsIgnoreCase("travel") && messageSplit.length == 2) {
             JSONObject jsonCity = getJSONFile(messageSplit[0]);
             messageSplit[1] = messageSplit[1].toUpperCase();
@@ -48,7 +48,7 @@ public class Travel extends Listeners {
             }
         }
     }
-
+    // get country flag of the airport's country
     public EmbedBuilder getFlagsAndTime(String airportCode , JSONObject jsonCity) {
         EmbedBuilder embed = new EmbedBuilder();
         try {

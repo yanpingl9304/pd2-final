@@ -17,10 +17,10 @@ public class SlashCom extends ListenerAdapter {
                     + "hourly : gets hourly weather forecase\n").queue();
         }
         if (event.getName().equals("addcity")) {
-            String fileLocation = "C:\\Users\\user\\IdeaProjects\\pd2-final\\src\\main\\resources\\city.json";//change if needed
+            String fileLocation = "src\\main\\resources\\City.json";//相對路徑
             OptionMapping city = event.getOption("city");
             OptionMapping link = event.getOption("link");
-            String cityCopy = ("C:\\Users\\user\\IdeaProjects\\pd2-final\\src\\main\\resources\\tempCity.json");//change if needed
+            String cityCopy = ("src\\main\\resources\\tempCity.json");//相對路徑
             String linkText = link.getAsString();
             String cityName = city.getAsString();
             if (!linkText.contains("https://weather.com/")){
@@ -40,13 +40,13 @@ public class SlashCom extends ListenerAdapter {
             StringBuilder tempCity = new StringBuilder();
             addRegion(tempCity,cityCopy,cityName,linkText,fileLocation);
             event.reply("City " + cityName + " added\n" +
-                        "please restart the bot after you add a new city").queue();
+                        "Please restart the bot after you add a new city").queue();
         }
         if (event.getName().equals("addtraveldest")) {
-            String fileLocation = "C:\\Users\\yanpi\\Desktop\\DiscordBot\\src\\main\\resources\\TravelCity.json";
+            String fileLocation = "\\src\\main\\resources\\TravelCity.json";
             OptionMapping airport = event.getOption("airport");
             OptionMapping link = event.getOption("link");
-            String airportCopy = "C:\\Users\\yanpi\\Desktop\\DiscordBot\\src\\main\\resources\\tempTravelCity.json";
+            String airportCopy = "src\\main\\resources\\tempTravelCity.json";
             String linkText = link.getAsString();
             String airportName = airport.getAsString();
             if (!linkText.contains("https://weather.com/")){
