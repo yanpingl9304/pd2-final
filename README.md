@@ -22,7 +22,7 @@ How to use :<br/><br/>default , <br/>
              /addcity [city] [url]<br/><br/>
              add airport ,<br/>
              /addtraveldest [airport] [url]<br/><br/>
-             [url] must from weather.com
+             [url] must from weather.com<br/><br/>
 =============================================== 
 Because we store locations url in json file,<br/>
 so currently,<br/><br/>
