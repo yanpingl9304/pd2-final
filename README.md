@@ -14,10 +14,15 @@ get hourly forecast,<br/>
 get daily forecast,<br/>
 get weather info around given airport.<br/><br/>
 =============================================== 
-How to use :<br/><br/>default usage, <br/>
+How to use :<br/><br/>default , <br/>
              weather [location] [options]<br/><br/>
-             airport usage,<br/>
+             airport ,<br/>
              travel [airport code] [options]<br/><br/>
+             add city ,<br/>
+             /addcity [city] [url]<br/><br/>
+             add airport ,<br/>
+             /addtraveldest [airport] [url]<br/><br/>
+             [url] must from weather.com<br/><br/>
 =============================================== 
 Because we store locations url in json file,<br/>
 so currently,<br/><br/>
