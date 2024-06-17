@@ -3,7 +3,8 @@ build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
-/src/resources/config.json
+### 隱藏token ###
+src/resources/config.json
 ### IntelliJ IDEA ###
 .idea/modules.xml
 .idea/jarRepositories.xml
