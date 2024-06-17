@@ -43,7 +43,7 @@ public class SlashCom extends ListenerAdapter {
                         "Please restart the bot after you add a new city").queue();
         }
         if (event.getName().equals("addtraveldest")) {
-            String fileLocation = "\\src\\main\\resources\\TravelCity.json";
+            String fileLocation = "src\\main\\resources\\TravelCity.json";
             OptionMapping airport = event.getOption("airport");
             OptionMapping link = event.getOption("link");
             String airportCopy = "src\\main\\resources\\tempTravelCity.json";
