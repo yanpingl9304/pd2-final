@@ -43,10 +43,10 @@ public class SlashCom extends ListenerAdapter {
                         "Please restart the bot after you add a new city").queue();
         }
         if (event.getName().equals("addtraveldest")) {
-            String fileLocation = "src\\main\\resources\\TravelCity.json";
+            String fileLocation = "src\\main\\resources\\TravelCity.json"; //相對路徑
             OptionMapping airport = event.getOption("airport");
             OptionMapping link = event.getOption("link");
-            String airportCopy = "src\\main\\resources\\tempTravelCity.json";
+            String airportCopy = "src\\main\\resources\\tempTravelCity.json"; //相對路徑
             String linkText = link.getAsString();
             String airportName = airport.getAsString();
             if (!linkText.contains("https://weather.com/")){
