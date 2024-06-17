@@ -53,8 +53,12 @@ public class Listeners extends ListenerAdapter {
                 event.getChannel().sendMessage("Usage : weather [city] [function]").queue();
             } else if(messageSplit.length == 2) {
                 JSONObject jsonCity = getJSONFile(messageSplit[0]);
-                GetCurrentWeather(event,messageSplit[1],jsonCity);
-                } else if(messageSplit.length == 3) {
+                if (!jsonCity.has(messageSplit[1])) {
+                    event.getChannel().sendMessage("City " + messageSplit[1] + " not found in the JSON data.").queue();
+                } else {
+                    GetCurrentWeather(event,messageSplit[1],jsonCity);
+                }
+            } else if(messageSplit.length == 3) {
                 String cityName = messageSplit[1];
                 JSONObject jsonCity = getJSONFile(messageSplit[0]);
 
