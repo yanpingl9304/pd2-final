@@ -25,10 +25,14 @@ public class Travel extends Listeners {
                                            "travel [Airport Code]").queue();
         } else if (messageSplit[0].equalsIgnoreCase("travel") && messageSplit.length == 2) {
             JSONObject jsonCity = getJSONFile(messageSplit[0]);
-            messageSplit[1] = messageSplit[1].toUpperCase();
-            EmbedBuilder embed = getFlagsAndTime(messageSplit[1],jsonCity);
-            event.getChannel().sendMessage("").setEmbeds(embed.build()).queue();
-            GetCurrentWeather(event, messageSplit[1],jsonCity);
+            if(jsonCity.has()) {
+                messageSplit[1] = messageSplit[1].toUpperCase();
+                EmbedBuilder embed = getFlagsAndTime(messageSplit[1],jsonCity);
+                event.getChannel().sendMessage("").setEmbeds(embed.build()).queue();
+                GetCurrentWeather(event, messageSplit[1],jsonCity);
+            } else {
+                event.getChannel().sendMessage("City " + messageSplit[1].toUpperCase() + " not found in the JSON data.").queue();
+            }
         } else if (messageSplit[0].equalsIgnoreCase("travel") && messageSplit.length == 3) {
             JSONObject jsonCity = getJSONFile(messageSplit[0]);
             EmbedBuilder embed = getFlagsAndTime(messageSplit[1],jsonCity);
