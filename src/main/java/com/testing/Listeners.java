@@ -187,7 +187,7 @@ public class Listeners extends ListenerAdapter {
             // output
             EmbedBuilder embed = new EmbedBuilder();
             embed.setTitle("Current Weather Detail Information in "+getLocation(city ,jsonCity));
-            embed.setDescription("Temperature High / Low : " + FtoC(temperature.substring(0,2))+" / "+FtoC(temperature.substring(3,5)) + "\n"
+            embed.setDescription("Temperature High / Low : " + FtoC(temperature) + "\n"
                                     +"Wind : " + WindSpeedInKph +" KM/H \n"
                                     +"Humidity : " + humidity + " , "+HumidityLevel(humidity) + "\n"
                                     +"UV : " + UV + " , "+UVLevel(UV));
