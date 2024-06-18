@@ -7,7 +7,7 @@ Using Jsoup to get weather info from<br/>
 weather.com and using JDA to create<br/>
 a discord bot.<br/><br/>
 =============================================== 
-Current fucntion :<br/><br/>
+Current function :<br/><br/>
 get current weather,<br/>
 get detail weather,<br/>
 get hourly forecast,<br/>

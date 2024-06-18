@@ -39,24 +39,24 @@ public class Travel extends Listeners {
             event.getChannel().sendMessage("").setEmbeds(embed.build()).queue();
             switch (messageSplit[2]) {
                 case "daily" :
-                    if(jsonCity.has(messageSplit[2])) {
+                    if(jsonCity.has(messageSplit[1])) {
                         getDailyForecast(event, messageSplit[1],jsonCity);
                     } else {
-                        event.getChannel().sendMessage("City " + messageSplit[1].toUpperCase() + " not found in the JSON data.").queue();
+                        event.getChannel().sendMessage("Airport " + messageSplit[1].toUpperCase() + " not found in the JSON data.").queue();
                     }
                     break;
                 case "detail" :
-                    if(jsonCity.has(messageSplit[2])) {
+                    if(jsonCity.has(messageSplit[1])) {
                         getDetailWeather(event, messageSplit[1],jsonCity);
                     } else {
-                        event.getChannel().sendMessage("City " + messageSplit[1].toUpperCase() + " not found in the JSON data.").queue();
+                        event.getChannel().sendMessage("Airport " + messageSplit[1].toUpperCase() + " not found in the JSON data.").queue();
                     }
                     break;
                 case "hourly" :
-                    if(jsonCity.has(messageSplit[2])) {
+                    if(jsonCity.has(messageSplit[1])) {
                         getHourlyForecast(event, messageSplit[1],jsonCity);
                     } else {
-                        event.getChannel().sendMessage("City " + messageSplit[1].toUpperCase() + " not found in the JSON data.").queue();
+                        event.getChannel().sendMessage("Airport " + messageSplit[1].toUpperCase() + " not found in the JSON data.").queue();
                     }
                     break;
                 default:
